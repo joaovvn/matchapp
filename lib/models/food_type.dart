@@ -1,24 +1,27 @@
 class FoodType {
   String id;
+  String coupleId;
   String title;
   String image;
-  int manaVote;
-  int jvVote;
+  int firstVote;
+  int secondVote;
 
   FoodType(
       {required this.id,
       required this.title,
       required this.image,
-      required this.manaVote,
-      required this.jvVote});
+      required this.coupleId,
+      required this.firstVote,
+      required this.secondVote});
 
   factory FoodType.fromJson(Map<String, dynamic> json, String id) {
     return FoodType(
       id: id,
       title: json['title'],
+      coupleId: json['coupleId'],
       image: json['image'],
-      manaVote: json['manaVote'],
-      jvVote: json['jvVote'],
+      firstVote: json['firstVote'],
+      secondVote: json['secondVote'],
     );
   }
 
@@ -26,8 +29,9 @@ class FoodType {
     return {
       'title': title,
       'image': image,
-      'manaVote': manaVote,
-      'jvVote': jvVote
+      'coupleId': coupleId,
+      'firstVote': firstVote,
+      'secondVote': secondVote
     };
   }
 }

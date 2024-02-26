@@ -9,7 +9,7 @@
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.example.matchApp</string>
+	<string>com.joaovvn.matchApp</string>
 	<key>PROJECT_ID</key>
 	<string>matchapp-b63fa</string>
 	<key>STORAGE_BUCKET</key>
@@ -25,6 +25,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:195149743395:ios:d190e524f07adc04c1f896</string>
+	<string>1:195149743395:ios:9003302da6c98ab7c1f896</string>
 </dict>
 </plist>

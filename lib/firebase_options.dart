@@ -54,7 +54,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyDqw69aBPm_7K41k6Gqb_kGBJs2s49G3DI',
-    appId: '1:195149743395:android:03c9d32ece323331c1f896',
+    appId: '1:195149743395:android:1e85eaef6a107fbec1f896',
     messagingSenderId: '195149743395',
     projectId: 'matchapp-b63fa',
     storageBucket: 'matchapp-b63fa.appspot.com',
@@ -62,12 +62,11 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyAxXZLdhu7JUV6eLdY_z9asOi25pKUu4aE',
-    appId: '1:195149743395:ios:d190e524f07adc04c1f896',
+    appId: '1:195149743395:ios:9003302da6c98ab7c1f896',
     messagingSenderId: '195149743395',
     projectId: 'matchapp-b63fa',
     storageBucket: 'matchapp-b63fa.appspot.com',
-    iosClientId: '195149743395-nv7jutciepe2nff0nvjf7ptu631kucp0.apps.googleusercontent.com',
-    iosBundleId: 'com.example.matchApp',
+    iosBundleId: 'com.joaovvn.matchApp',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(

@@ -1,16 +1,20 @@
-# match_app
+# MatchApp
 
-A new Flutter project.
+Aplicação para escolha de comidas/restaurantes.
 
-## Getting Started
 
-This project is a starting point for a Flutter application.
+## Stack utilizada
 
-A few resources to get you started if this is your first Flutter project:
+**Mobile:** [Flutter](https://docs.flutter.dev/).
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+**Back-end:** [Firebase](https://firebase.google.com/?hl=pt).
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+### Rodando localmente
+Para rodar o projeto é necessário a seguinte versão do flutter:
+```
+[✓] Flutter (Channel stable, 3.19.1)
+    • Flutter version 3.19.1 on channel stable
+    • Dart version 3.3.0
+    • DevTools version 2.31.1
+```
+[Download das versões do Flutter](https://docs.flutter.dev/release/archive)
