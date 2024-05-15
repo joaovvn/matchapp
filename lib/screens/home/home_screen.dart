@@ -87,7 +87,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   },
                                   style: ButtonStyle(
                                     overlayColor:
-                                        MaterialStateColor.resolveWith(
+                                        WidgetStateColor.resolveWith(
                                             (states) =>
                                                 Colors.white.withOpacity(0.1)),
                                   ),

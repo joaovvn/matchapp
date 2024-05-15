@@ -15,10 +15,10 @@ class WidgetConstants {
       BuildContext context) {
     return ElevatedButton(
         style: ButtonStyle(
-            fixedSize: MaterialStatePropertyAll(
+            fixedSize: WidgetStatePropertyAll(
                 Size(MediaQuery.of(context).size.width * width, 48)),
-            backgroundColor: MaterialStatePropertyAll(color),
-            shape: MaterialStatePropertyAll(RoundedRectangleBorder(
+            backgroundColor: WidgetStatePropertyAll(color),
+            shape: WidgetStatePropertyAll(RoundedRectangleBorder(
               side: const BorderSide(color: Colors.white, width: 2),
               borderRadius: BorderRadius.circular(12.0),
             ))),

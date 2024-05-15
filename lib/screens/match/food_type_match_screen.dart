@@ -31,7 +31,7 @@ class _FoodTypeMatchScreenState extends State<FoodTypeMatchScreen> {
       body: FutureBuilder(
           future: controller.getList(),
           builder: (context, list) {
-            if (list.data != null) {
+            if (list.data != null && list.data!.isNotEmpty) {
               return Column(
                 children: [
                   Expanded(
@@ -121,7 +121,7 @@ class _FoodTypeMatchScreenState extends State<FoodTypeMatchScreen> {
                                   onPressed: () => swiperController.swipeLeft(),
                                   style: const ButtonStyle(
                                       backgroundColor:
-                                          MaterialStatePropertyAll(Colors.red)),
+                                          WidgetStatePropertyAll(Colors.red)),
                                   icon: const Icon(
                                     Icons.close,
                                     color: Colors.white,
@@ -131,7 +131,7 @@ class _FoodTypeMatchScreenState extends State<FoodTypeMatchScreen> {
                                   onPressed: () =>
                                       swiperController.swipeRight(),
                                   style: const ButtonStyle(
-                                      backgroundColor: MaterialStatePropertyAll(
+                                      backgroundColor: WidgetStatePropertyAll(
                                           Colors.green)),
                                   icon: const Icon(
                                     Icons.check,
@@ -150,13 +150,16 @@ class _FoodTypeMatchScreenState extends State<FoodTypeMatchScreen> {
                     ),
                   )
                 : const Center(
-                    child: Text(
-                      "Não há comidas cadastradas!",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 25,
-                          color: Colors.deepPurple),
+                    child: Padding(
+                      padding: EdgeInsets.all(30.0),
+                      child: Text(
+                        "Não há comidas cadastradas!",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 25,
+                            color: Colors.deepPurple),
+                      ),
                     ),
                   );
           }),

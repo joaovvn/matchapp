@@ -68,7 +68,6 @@ class HomeController {
         .delete();
     preferences.remove("coupleId");
     coupleId.value = null;
-    showRemovedPartner();
   }
 
   verifyRemovedPartner() async {
@@ -82,7 +81,7 @@ class HomeController {
       coupleId.value = null;
       showRemovedPartner();
     } else {
-      verifyRemovedPartner();
+      await verifyRemovedPartner();
     }
   }
 

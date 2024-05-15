@@ -125,7 +125,7 @@ class _RestaurantMatchScreenState extends State<RestaurantMatchScreen> {
                                   onPressed: () => swiperController.swipeLeft(),
                                   style: const ButtonStyle(
                                       backgroundColor:
-                                          MaterialStatePropertyAll(Colors.red)),
+                                          WidgetStatePropertyAll(Colors.red)),
                                   icon: const Icon(
                                     Icons.close,
                                     color: Colors.white,
@@ -135,7 +135,7 @@ class _RestaurantMatchScreenState extends State<RestaurantMatchScreen> {
                                   onPressed: () =>
                                       swiperController.swipeRight(),
                                   style: const ButtonStyle(
-                                      backgroundColor: MaterialStatePropertyAll(
+                                      backgroundColor: WidgetStatePropertyAll(
                                           Colors.green)),
                                   icon: const Icon(
                                     Icons.check,
@@ -154,13 +154,16 @@ class _RestaurantMatchScreenState extends State<RestaurantMatchScreen> {
                     ),
                   )
                 : const Center(
-                    child: Text(
-                      "Não há restaurantes cadastrados!",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 25,
-                          color: Colors.deepPurple),
+                    child: Padding(
+                      padding: EdgeInsets.all(30.0),
+                      child: Text(
+                        "Não há restaurantes cadastrados!",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 25,
+                            color: Colors.deepPurple),
+                      ),
                     ),
                   );
           }),
