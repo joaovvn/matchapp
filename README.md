@@ -12,9 +12,13 @@ Aplicação para escolha de comidas/restaurantes.
 ### Rodando localmente
 Para rodar o projeto é necessário a seguinte versão do flutter:
 ```
-[✓] Flutter (Channel stable, 3.19.1)
-    • Flutter version 3.19.1 on channel stable
-    • Dart version 3.3.0
-    • DevTools version 2.31.1
+[✓] Flutter 3.22.0 
+• channel stable 
+• https://github.com/flutter/flutter.git
+Tools 
+• Dart 3.4.0 
+• DevTools 2.34.3
 ```
+
+
 [Download das versões do Flutter](https://docs.flutter.dev/release/archive)

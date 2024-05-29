@@ -32,6 +32,18 @@ class RestaurantMatchController {
         .toList();
   }
 
+  Future<bool> hasMenu(String restaurantName) async {
+    await getUser();
+    QuerySnapshot<Map<String, dynamic>> menu = await FirebaseFirestore.instance
+        .collection('Menu')
+        .where("restaurant", isEqualTo: restaurantName)
+        .get();
+    if (menu.docs.isEmpty) {
+      return false;
+    }
+    return true;
+  }
+
   getUser() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     String? id = preferences.getString("coupleId");
@@ -73,8 +85,10 @@ class RestaurantMatchController {
         matches.any((element) =>
             element.firstVote == element.secondVote &&
             element.firstVote == 1)) {
-      openMatchDialog(matches.firstWhere((element) =>
-          element.firstVote == element.secondVote && element.firstVote == 1));
+      Restaurant restaurant = matches.firstWhere((element) =>
+          element.firstVote == element.secondVote && element.firstVote == 1);
+      bool showMenu = await hasMenu(restaurant.title);
+      openMatchDialog(restaurant, showMenu);
     } else if (last &&
         matches.every((element) =>
             ((element.firstVote == -1 && element.secondVote.isOdd) ||
@@ -85,10 +99,10 @@ class RestaurantMatchController {
     }
   }
 
-  openMatchDialog(Restaurant restaurant) {
+  openMatchDialog(Restaurant restaurant, bool showMenu) async {
     if (!match) {
       match = true;
-      widgets.restaurantMatchDialog(context, restaurant);
+      widgets.restaurantMatchDialog(context, restaurant, showMenu);
     }
   }
 

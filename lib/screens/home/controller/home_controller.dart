@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:get/get.dart';
 import 'package:match_app/constants/widget_constants.dart';
 import 'package:match_app/models/couple.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
@@ -113,7 +114,7 @@ class HomeController {
                       child: IconButton(
                           splashRadius: 20,
                           onPressed: () async {
-                            Navigator.of(context).pop();
+                            Get.back();
                           },
                           icon: const Icon(
                             Icons.close,
@@ -129,7 +130,7 @@ class HomeController {
                     data: FirebaseAuth.instance.currentUser!.uid),
                 const Gap(15),
                 widgets.button(Colors.white, 0.4, () {
-                  Navigator.of(context).pop();
+                  Get.back();
                   showDialog(
                     context: context,
                     builder: (context) => Dialog(
@@ -154,8 +155,7 @@ class HomeController {
                                 Expanded(
                                   child: IconButton(
                                       splashRadius: 20,
-                                      onPressed: () =>
-                                          Navigator.of(context).pop(),
+                                      onPressed: () => Get.back(),
                                       icon: const Icon(
                                         Icons.close,
                                         color: Colors.white,
@@ -212,7 +212,7 @@ class HomeController {
   }
 
   onPartnerAdded() {
-    Navigator.of(context).pop();
+    Get.back();
     showAddedPartner();
   }
 

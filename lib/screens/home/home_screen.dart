@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:get/get.dart';
 import 'package:match_app/constants/function_constants.dart';
 import 'package:match_app/constants/widget_constants.dart';
 import 'package:match_app/screens/home/controller/home_controller.dart';
@@ -49,13 +50,10 @@ class _HomeScreenState extends State<HomeScreen> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              widgets.button(
-                                  Colors.deepPurple,
-                                  0.5,
-                                  () => Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              const FoodTypeMatchScreen())),
+                              widgets.button(Colors.deepPurple, 0.5, () {
+                                FunctionConstants().resetVotes();
+                                Get.to(() => const FoodTypeMatchScreen());
+                              },
                                   const Text(
                                     "Começar",
                                     style: TextStyle(
@@ -67,10 +65,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               widgets.button(
                                   Colors.white,
                                   0.5,
-                                  () => Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              const RegisterScreen())),
+                                  () => Get.to(() => const RegisterScreen()),
                                   const Text(
                                     "Cadastrar",
                                     style: TextStyle(
@@ -86,10 +81,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                         : controller.removePartner();
                                   },
                                   style: ButtonStyle(
-                                    overlayColor:
-                                        WidgetStateColor.resolveWith(
-                                            (states) =>
-                                                Colors.white.withOpacity(0.1)),
+                                    overlayColor: WidgetStateColor.resolveWith(
+                                        (states) =>
+                                            Colors.white.withOpacity(0.1)),
                                   ),
                                   child: Text(
                                     coupleId == null

@@ -54,7 +54,7 @@ class _RestaurantMatchScreenState extends State<RestaurantMatchScreen> {
                               ),
                             )
                           : AppinioSwiper(
-                              backgroundCardCount: list.data!.length,
+                              backgroundCardCount: 2,
                               swipeOptions: const SwipeOptions.symmetric(
                                   horizontal: true),
                               allowUnSwipe: false,
@@ -135,8 +135,8 @@ class _RestaurantMatchScreenState extends State<RestaurantMatchScreen> {
                                   onPressed: () =>
                                       swiperController.swipeRight(),
                                   style: const ButtonStyle(
-                                      backgroundColor: WidgetStatePropertyAll(
-                                          Colors.green)),
+                                      backgroundColor:
+                                          WidgetStatePropertyAll(Colors.green)),
                                   icon: const Icon(
                                     Icons.check,
                                     color: Colors.white,

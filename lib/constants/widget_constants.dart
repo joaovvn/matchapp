@@ -2,11 +2,14 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+import 'package:gap/gap.dart';
+import 'package:get/get.dart';
 import 'package:match_app/constants/function_constants.dart';
 import 'package:match_app/constants/image_constants.dart';
 import 'package:match_app/models/food_type.dart';
 import 'package:match_app/models/restaurant.dart';
 import 'package:match_app/screens/match/restaurant_match_screen.dart';
+import 'package:match_app/screens/sales/sales_screen.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class WidgetConstants {
@@ -43,11 +46,23 @@ class WidgetConstants {
                 color: Colors.deepPurple,
               ),
               onPressed: () {
-                onPressed;
-                Navigator.of(context).pop();
+                Get.until((route) => route.isFirst);
               },
             ),
     );
+  }
+
+  showWarning(BuildContext context, String text) {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      backgroundColor: Colors.deepPurple,
+      duration: const Duration(seconds: 1, milliseconds: 500),
+      content: Text(
+        text,
+        textAlign: TextAlign.center,
+        style: const TextStyle(
+            color: Colors.white, fontSize: 15, fontWeight: FontWeight.bold),
+      ),
+    ));
   }
 
   registerDialog(BuildContext context) {
@@ -87,8 +102,7 @@ class WidgetConstants {
                   padding: EdgeInsets.symmetric(
                       horizontal: screenSize.width * 0.05, vertical: 20.0),
                   child: button(Colors.deepPurple, 0.9, () {
-                    Navigator.of(context).pop();
-                    Navigator.of(context).pop();
+                    Get.until((route) => route.isFirst);
                   },
                       const Text("OK",
                           style: TextStyle(
@@ -103,7 +117,8 @@ class WidgetConstants {
     );
   }
 
-  restaurantMatchDialog(BuildContext context, Restaurant restaurant) {
+  restaurantMatchDialog(
+      BuildContext context, Restaurant restaurant, bool showMenu) {
     Size screenSize = MediaQuery.of(context).size;
     showDialog(
         context: context,
@@ -158,10 +173,30 @@ class WidgetConstants {
                           ],
                         ),
                       ),
+                      showMenu
+                          ? Padding(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: screenSize.width * 0.05,
+                                  vertical: 20.0),
+                              child: button(Colors.deepPurple, 0.9, () async {
+                                Get.back();
+                                Get.off(() => SalesScreen(
+                                      restaurant: restaurant,
+                                    ));
+                              },
+                                  const Text("Fazer Pedido",
+                                      style: TextStyle(
+                                          fontSize: 10,
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold)),
+                                  context),
+                            )
+                          : const Gap(20),
                       Padding(
-                        padding: EdgeInsets.symmetric(
-                            horizontal: screenSize.width * 0.05,
-                            vertical: 20.0),
+                        padding: EdgeInsets.only(
+                            left: screenSize.width * 0.05,
+                            right: screenSize.width * 0.05,
+                            bottom: 20.0),
                         child: button(Colors.deepPurple, 0.9, () async {
                           await launchUrl(Uri.parse(
                               "https://maps.google.com/?q=${restaurant.title}"));
@@ -179,8 +214,7 @@ class WidgetConstants {
                             right: screenSize.width * 0.05,
                             bottom: 20.0),
                         child: button(Colors.deepPurple, 0.9, () {
-                          Navigator.of(context).pop();
-                          Navigator.of(context).pop();
+                          Get.until((route) => route.isFirst);
                           functions.resetVotes();
                         },
                             const Text("OK",
@@ -228,6 +262,17 @@ class WidgetConstants {
                                     fontWeight: FontWeight.bold),
                               ),
                             ),
+                            const Padding(
+                              padding: EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 8.0),
+                              child: Text(
+                                "Agora vamos para a escolha dos restaurantes!",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    color: Colors.deepPurple,
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            ),
                             ClipRRect(
                               borderRadius:
                                   const BorderRadius.all(Radius.circular(20)),
@@ -257,12 +302,10 @@ class WidgetConstants {
                         padding: EdgeInsets.symmetric(
                             horizontal: screenSize.width * 0.05, vertical: 20),
                         child: button(Colors.deepPurple, 0.9, () {
-                          Navigator.of(context).pop();
-                          Navigator.of(context)
-                              .pushReplacement(MaterialPageRoute(
-                                  builder: (_) => RestaurantMatchScreen(
-                                        foodTypeId: foodType.id,
-                                      )));
+                          Get.back();
+                          Get.off(() => RestaurantMatchScreen(
+                                foodTypeId: foodType.id,
+                              ));
                         },
                             const Text("Continuar",
                                 style: TextStyle(
@@ -310,8 +353,7 @@ class WidgetConstants {
                             horizontal: screenSize.width * 0.05,
                             vertical: 20.0),
                         child: button(Colors.deepPurple, 0.9, () {
-                          Navigator.of(context).pop();
-                          Navigator.of(context).pop();
+                          Get.until((route) => route.isFirst);
                         },
                             const Text("Voltar para a página inicial",
                                 style: TextStyle(
@@ -362,8 +404,7 @@ class WidgetConstants {
                             vertical: 20.0),
                         child: button(Colors.deepPurple, 0.9, () {
                           functions.resetVotes();
-                          Navigator.of(context).pop();
-                          Navigator.of(context).pop();
+                          Get.until((route) => route.isFirst);
                         },
                             const Text("Voltar para a página inicial",
                                 style: TextStyle(
@@ -515,7 +556,7 @@ class WidgetConstants {
                             horizontal: screenSize.width * 0.05,
                             vertical: 20.0),
                         child: button(Colors.deepPurple, 0.9, () {
-                          Navigator.of(context).pop();
+                          Get.back();
                         },
                             const Text("OK",
                                 style: TextStyle(
@@ -566,7 +607,7 @@ class WidgetConstants {
                             horizontal: screenSize.width * 0.05,
                             vertical: 20.0),
                         child: button(Colors.deepPurple, 0.9, () {
-                          Navigator.of(context).pop();
+                          Get.back();
                         },
                             const Text("OK",
                                 style: TextStyle(
