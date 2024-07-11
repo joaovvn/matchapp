@@ -11,11 +11,11 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   await FirebaseAuth.instance.signInAnonymously();
-  runApp(const MyApp());
+  runApp(const FoodMatch());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class FoodMatch extends StatelessWidget {
+  const FoodMatch({super.key});
 
   @override
   Widget build(BuildContext context) {
