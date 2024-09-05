@@ -1,0 +1,9 @@
+{
+    "start": "Começar",
+    "register": "Cadastrar",
+    "addPartner": "Adicionar Parceiro",
+    "removePartner": "Remover Parceiro",
+    "showQR": "Mostre o QR Code para seu parceiro ler",
+    "readPartnerQR": "Leia o QR Code na tela do seu parceiro",
+    "readQR": "Ler QR Code"
+}

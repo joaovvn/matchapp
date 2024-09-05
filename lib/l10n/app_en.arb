@@ -1,0 +1,9 @@
+{
+    "start": "Start",
+    "register": "REgister",
+    "addPartner": "Add Partner",
+    "removePartner": "Remove Partner",
+    "showQR": "Show QR Code to your partner",
+    "readPartnerQR": "Read your partner's QR Code",
+    "readQR": "Read QR Code"
+}

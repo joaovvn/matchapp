@@ -46,6 +46,9 @@ dependencies:
   url_launcher: ^6.1.11
   flutter_launcher_icons: ^0.13.1
   get: ^4.6.6
+  flutter_localizations:
+    sdk: flutter
+  intl: any
 
 dev_dependencies:
   flutter_test:
@@ -58,9 +61,8 @@ dev_dependencies:
   # rules and activating additional ones.
   flutter_lints: ^3.0.1
 
-
 flutter_launcher_icons:
-  image_path: "assets/icon.png" 
+  image_path: "assets/icon.png"
   android: true
   ios: true
   remove_alpha_ios: true
@@ -70,6 +72,7 @@ flutter_launcher_icons:
 
 # The following section is specific to Flutter packages.
 flutter:
+  generate: true
   fonts:
     - family: Kodchasan
       fonts:

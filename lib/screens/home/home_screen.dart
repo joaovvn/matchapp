@@ -6,6 +6,7 @@ import 'package:match_app/constants/widget_constants.dart';
 import 'package:match_app/screens/home/controller/home_controller.dart';
 import 'package:match_app/screens/match/food_type_match_screen.dart';
 import 'package:match_app/screens/register/register_screen.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -54,9 +55,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                 FunctionConstants().resetVotes();
                                 Get.to(() => const FoodTypeMatchScreen());
                               },
-                                  const Text(
-                                    "Começar",
-                                    style: TextStyle(
+                                  Text(
+                                    AppLocalizations.of(context)!.start,
+                                    style: const TextStyle(
                                         fontWeight: FontWeight.bold,
                                         color: Colors.white),
                                   ),
@@ -66,9 +67,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                   Colors.white,
                                   0.5,
                                   () => Get.to(() => const RegisterScreen()),
-                                  const Text(
-                                    "Cadastrar",
-                                    style: TextStyle(
+                                  Text(
+                                    AppLocalizations.of(context)!.register,
+                                    style: const TextStyle(
                                         color: Colors.deepPurple,
                                         fontWeight: FontWeight.bold),
                                   ),
@@ -87,8 +88,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                   ),
                                   child: Text(
                                     coupleId == null
-                                        ? "Adicionar Parceiro"
-                                        : "Remover Parceiro",
+                                        ? AppLocalizations.of(context)!
+                                            .addPartner
+                                        : AppLocalizations.of(context)!
+                                            .removePartner,
                                     style: const TextStyle(
                                         fontSize: 12,
                                         color: Colors.white,

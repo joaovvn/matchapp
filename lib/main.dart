@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:get/get.dart';
 import 'package:match_app/screens/home/home_screen.dart';
 import 'firebase_options.dart';
@@ -21,6 +22,8 @@ class FoodMatch extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
       theme: ThemeData(
           pageTransitionsTheme: const PageTransitionsTheme(builders: {
             TargetPlatform.android: CupertinoPageTransitionsBuilder(),

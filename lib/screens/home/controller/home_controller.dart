@@ -8,6 +8,7 @@ import 'package:match_app/models/couple.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class HomeController {
   HomeController({required this.context});
@@ -103,11 +104,11 @@ class HomeController {
                 Row(
                   children: [
                     const Expanded(child: SizedBox()),
-                    const Expanded(
+                    Expanded(
                       flex: 7,
                       child: Text(
-                        "Mostre o QR Code para seu parceiro ler",
-                        style: TextStyle(fontSize: 12),
+                        AppLocalizations.of(context)!.showQR,
+                        style: const TextStyle(fontSize: 12),
                       ),
                     ),
                     Expanded(
