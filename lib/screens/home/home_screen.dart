@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
+import 'package:match_app/constants/colors_constants.dart';
 import 'package:match_app/constants/function_constants.dart';
+import 'package:match_app/constants/image_constants.dart';
 import 'package:match_app/constants/widget_constants.dart';
 import 'package:match_app/screens/home/controller/home_controller.dart';
 import 'package:match_app/screens/match/food_type_match_screen.dart';
@@ -17,6 +19,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   late HomeController controller;
+  RxBool isEnglish = (Get.locale == const Locale("en")).obs;
 
   @override
   void initState() {
@@ -26,7 +29,6 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   WidgetConstants widgets = WidgetConstants();
-  bool camera = false;
   @override
   Widget build(BuildContext context) {
     Size screenSize = MediaQuery.of(context).size;
@@ -97,7 +99,41 @@ class _HomeScreenState extends State<HomeScreen> {
                                         color: Colors.white,
                                         decoration: TextDecoration.underline,
                                         decorationColor: Colors.white),
-                                  ))
+                                  )),
+                              Obx(() {
+                                return Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Image.asset(
+                                      isEnglish.value
+                                          ? ImageConstants.brFlagOutlined
+                                          : ImageConstants.brFlag,
+                                    ),
+                                    Switch(
+                                      value: isEnglish.value,
+                                      onChanged: (_) {
+                                        isEnglish.value = !isEnglish.value;
+                                        isEnglish.value
+                                            ? Get.updateLocale(
+                                                const Locale("en"))
+                                            : Get.updateLocale(
+                                                const Locale("pt"));
+                                      },
+                                      inactiveTrackColor:
+                                          ColorsConstants.brGreen,
+                                      inactiveThumbColor:
+                                          ColorsConstants.brYellow,
+                                      activeColor: ColorsConstants.usBlue,
+                                      activeTrackColor: ColorsConstants.usRed,
+                                    ),
+                                    Image.asset(
+                                      isEnglish.value
+                                          ? ImageConstants.usFlag
+                                          : ImageConstants.usFlagOutlined,
+                                    ),
+                                  ],
+                                );
+                              }),
                             ]),
                       );
                     });

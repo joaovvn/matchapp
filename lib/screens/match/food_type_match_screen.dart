@@ -4,6 +4,7 @@ import 'package:appinio_swiper/appinio_swiper.dart';
 import 'package:flutter/material.dart';
 import 'package:match_app/constants/widget_constants.dart';
 import 'package:match_app/screens/match/controller/food_type_match_controller.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class FoodTypeMatchScreen extends StatefulWidget {
   const FoodTypeMatchScreen({super.key});
@@ -39,11 +40,12 @@ class _FoodTypeMatchScreenState extends State<FoodTypeMatchScreen> {
                     child: SizedBox(
                       width: MediaQuery.of(context).size.width * 0.8,
                       child: finished
-                          ? const Center(
+                          ? Center(
                               child: Text(
-                                "Aguardando as respostas do seu parceiro!",
+                                AppLocalizations.of(context)!
+                                    .waitingPartnerVotes,
                                 textAlign: TextAlign.center,
-                                style: TextStyle(
+                                style: const TextStyle(
                                     fontWeight: FontWeight.bold,
                                     fontSize: 25,
                                     color: Colors.deepPurple),
@@ -149,13 +151,13 @@ class _FoodTypeMatchScreenState extends State<FoodTypeMatchScreen> {
                       color: Colors.deepPurple,
                     ),
                   )
-                : const Center(
+                : Center(
                     child: Padding(
-                      padding: EdgeInsets.all(30.0),
+                      padding: const EdgeInsets.all(30.0),
                       child: Text(
-                        "Não há comidas cadastradas!",
+                        AppLocalizations.of(context)!.noRegisteredFoods,
                         textAlign: TextAlign.center,
-                        style: TextStyle(
+                        style: const TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 25,
                             color: Colors.deepPurple),

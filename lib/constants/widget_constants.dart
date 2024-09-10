@@ -11,6 +11,7 @@ import 'package:match_app/models/restaurant.dart';
 import 'package:match_app/screens/match/restaurant_match_screen.dart';
 import 'package:match_app/screens/sales/sales_screen.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class WidgetConstants {
   FunctionConstants functions = FunctionConstants();
@@ -30,13 +31,12 @@ class WidgetConstants {
   }
 
   AppBar appBar(bool isHome, BuildContext context, {Function? onPressed}) {
-    ImageConstants images = ImageConstants();
     return AppBar(
       toolbarHeight: 120,
       backgroundColor: Colors.white,
       centerTitle: true,
       title: Image.asset(
-        images.logo,
+        ImageConstants.logo,
       ),
       leading: isHome
           ? null
@@ -82,14 +82,14 @@ class WidgetConstants {
                 Padding(
                   padding:
                       EdgeInsets.symmetric(horizontal: screenSize.width * 0.05),
-                  child: const Column(
+                  child: Column(
                     children: [
                       Padding(
-                        padding: EdgeInsets.all(8.0),
+                        padding: const EdgeInsets.all(8.0),
                         child: Text(
-                          "Registrado com sucesso!",
+                          AppLocalizations.of(context)!.registeredSuccesfully,
                           textAlign: TextAlign.center,
-                          style: TextStyle(
+                          style: const TextStyle(
                               color: Colors.deepPurple,
                               fontSize: 30,
                               fontWeight: FontWeight.bold),
@@ -104,8 +104,8 @@ class WidgetConstants {
                   child: button(Colors.deepPurple, 0.9, () {
                     Get.until((route) => route.isFirst);
                   },
-                      const Text("OK",
-                          style: TextStyle(
+                      Text(AppLocalizations.of(context)!.ok,
+                          style: const TextStyle(
                               fontSize: 10,
                               color: Colors.white,
                               fontWeight: FontWeight.bold)),
@@ -140,12 +140,12 @@ class WidgetConstants {
                             horizontal: screenSize.width * 0.05),
                         child: Column(
                           children: [
-                            const Padding(
-                              padding: EdgeInsets.all(8.0),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
                               child: Text(
-                                "MATCH!!",
+                                AppLocalizations.of(context)!.match,
                                 textAlign: TextAlign.center,
-                                style: TextStyle(
+                                style: const TextStyle(
                                     color: Colors.deepPurple,
                                     fontSize: 30,
                                     fontWeight: FontWeight.bold),
@@ -184,8 +184,8 @@ class WidgetConstants {
                                       restaurant: restaurant,
                                     ));
                               },
-                                  const Text("Fazer Pedido",
-                                      style: TextStyle(
+                                  Text(AppLocalizations.of(context)!.placeOrder,
+                                      style: const TextStyle(
                                           fontSize: 10,
                                           color: Colors.white,
                                           fontWeight: FontWeight.bold)),
@@ -201,8 +201,8 @@ class WidgetConstants {
                           await launchUrl(Uri.parse(
                               "https://maps.google.com/?q=${restaurant.title}"));
                         },
-                            const Text("Buscar Localização",
-                                style: TextStyle(
+                            Text(AppLocalizations.of(context)!.findLocation,
+                                style: const TextStyle(
                                     fontSize: 10,
                                     color: Colors.white,
                                     fontWeight: FontWeight.bold)),
@@ -217,8 +217,8 @@ class WidgetConstants {
                           Get.until((route) => route.isFirst);
                           functions.resetVotes();
                         },
-                            const Text("OK",
-                                style: TextStyle(
+                            Text(AppLocalizations.of(context)!.ok,
+                                style: const TextStyle(
                                     fontSize: 10,
                                     color: Colors.white,
                                     fontWeight: FontWeight.bold)),
@@ -251,23 +251,24 @@ class WidgetConstants {
                             horizontal: screenSize.width * 0.05),
                         child: Column(
                           children: [
-                            const Padding(
-                              padding: EdgeInsets.all(8.0),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
                               child: Text(
-                                "MATCH!!",
+                                AppLocalizations.of(context)!.match,
                                 textAlign: TextAlign.center,
-                                style: TextStyle(
+                                style: const TextStyle(
                                     color: Colors.deepPurple,
                                     fontSize: 30,
                                     fontWeight: FontWeight.bold),
                               ),
                             ),
-                            const Padding(
-                              padding: EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 8.0),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 8.0),
                               child: Text(
-                                "Agora vamos para a escolha dos restaurantes!",
+                                AppLocalizations.of(context)!.chooseRestaurant,
                                 textAlign: TextAlign.center,
-                                style: TextStyle(
+                                style: const TextStyle(
                                     color: Colors.deepPurple,
                                     fontSize: 15,
                                     fontWeight: FontWeight.bold),
@@ -307,8 +308,8 @@ class WidgetConstants {
                                 foodTypeId: foodType.id,
                               ));
                         },
-                            const Text("Continuar",
-                                style: TextStyle(
+                            Text(AppLocalizations.of(context)!.proceed,
+                                style: const TextStyle(
                                     fontSize: 10,
                                     color: Colors.white,
                                     fontWeight: FontWeight.bold)),
@@ -337,12 +338,12 @@ class WidgetConstants {
                     padding: EdgeInsets.symmetric(
                         horizontal: screenSize.width * 0.05),
                     child: Column(children: [
-                      const Padding(
-                        padding: EdgeInsets.all(8.0),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
                         child: Text(
-                          "Você ainda não possui um parceiro adicionado. Adicione um e tente novamente!",
+                          AppLocalizations.of(context)!.partnerNotAdded,
                           textAlign: TextAlign.center,
-                          style: TextStyle(
+                          style: const TextStyle(
                               color: Colors.deepPurple,
                               fontSize: 20,
                               fontWeight: FontWeight.bold),
@@ -355,8 +356,8 @@ class WidgetConstants {
                         child: button(Colors.deepPurple, 0.9, () {
                           Get.until((route) => route.isFirst);
                         },
-                            const Text("Voltar para a página inicial",
-                                style: TextStyle(
+                            Text(AppLocalizations.of(context)!.backToHome,
+                                style: const TextStyle(
                                     fontSize: 10,
                                     color: Colors.white,
                                     fontWeight: FontWeight.bold)),
@@ -387,12 +388,12 @@ class WidgetConstants {
                     padding: EdgeInsets.symmetric(
                         horizontal: screenSize.width * 0.05),
                     child: Column(children: [
-                      const Padding(
-                        padding: EdgeInsets.all(8.0),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
                         child: Text(
-                          "NENHUM MATCH!!",
+                          AppLocalizations.of(context)!.noMatch,
                           textAlign: TextAlign.center,
-                          style: TextStyle(
+                          style: const TextStyle(
                               color: Colors.deepPurple,
                               fontSize: 20,
                               fontWeight: FontWeight.bold),
@@ -406,8 +407,8 @@ class WidgetConstants {
                           functions.resetVotes();
                           Get.until((route) => route.isFirst);
                         },
-                            const Text("Voltar para a página inicial",
-                                style: TextStyle(
+                            Text(AppLocalizations.of(context)!.backToHome,
+                                style: const TextStyle(
                                     fontSize: 10,
                                     color: Colors.white,
                                     fontWeight: FontWeight.bold)),
@@ -450,18 +451,18 @@ class WidgetConstants {
     );
   }
 
-  Widget imagePicker(Uint8List? image, Function() onTap) {
+  Widget imagePicker(Uint8List? image, Function() onTap, BuildContext context) {
     return Expanded(
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 30.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            const Padding(
-              padding: EdgeInsets.only(left: 8.0),
+            Padding(
+              padding: const EdgeInsets.only(left: 8.0),
               child: Text(
-                "Imagem",
-                style: TextStyle(
+                AppLocalizations.of(context)!.image,
+                style: const TextStyle(
                     color: Colors.deepPurple, fontWeight: FontWeight.w600),
               ),
             ),
@@ -540,12 +541,12 @@ class WidgetConstants {
                     padding: EdgeInsets.symmetric(
                         horizontal: screenSize.width * 0.05),
                     child: Column(children: [
-                      const Padding(
-                        padding: EdgeInsets.all(8.0),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
                         child: Text(
-                          "Parceiro adicionado!! Agora é só aproveitar.",
+                          AppLocalizations.of(context)!.partnerAdded,
                           textAlign: TextAlign.center,
-                          style: TextStyle(
+                          style: const TextStyle(
                               color: Colors.deepPurple,
                               fontSize: 20,
                               fontWeight: FontWeight.bold),
@@ -558,8 +559,8 @@ class WidgetConstants {
                         child: button(Colors.deepPurple, 0.9, () {
                           Get.back();
                         },
-                            const Text("OK",
-                                style: TextStyle(
+                            Text(AppLocalizations.of(context)!.ok,
+                                style: const TextStyle(
                                     fontSize: 10,
                                     color: Colors.white,
                                     fontWeight: FontWeight.bold)),
@@ -591,12 +592,12 @@ class WidgetConstants {
                     padding: EdgeInsets.symmetric(
                         horizontal: screenSize.width * 0.05),
                     child: Column(children: [
-                      const Padding(
-                        padding: EdgeInsets.all(8.0),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
                         child: Text(
-                          "Parceiro removido!!",
+                          AppLocalizations.of(context)!.partnerRemoved,
                           textAlign: TextAlign.center,
-                          style: TextStyle(
+                          style: const TextStyle(
                               color: Colors.deepPurple,
                               fontSize: 20,
                               fontWeight: FontWeight.bold),
@@ -609,8 +610,8 @@ class WidgetConstants {
                         child: button(Colors.deepPurple, 0.9, () {
                           Get.back();
                         },
-                            const Text("OK",
-                                style: TextStyle(
+                            Text(AppLocalizations.of(context)!.ok,
+                                style: const TextStyle(
                                     fontSize: 10,
                                     color: Colors.white,
                                     fontWeight: FontWeight.bold)),

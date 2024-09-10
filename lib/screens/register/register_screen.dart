@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:match_app/constants/value_constants.dart';
 import 'package:match_app/constants/widget_constants.dart';
 import 'package:match_app/screens/register/controller/register_controller.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -37,53 +39,57 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     widgets.dropdown(
                         snapshot.data == true &&
                                 controller.foodTypeItems.isNotEmpty
-                            ? const [
+                            ? [
                                 DropdownMenuItem(
-                                  value: "FoodType",
+                                  value: ValueConstants.foodType,
                                   child: Text(
-                                    "Comida",
-                                    style: TextStyle(color: Colors.deepPurple),
+                                    AppLocalizations.of(context)!.foodType,
+                                    style: const TextStyle(
+                                        color: Colors.deepPurple),
                                   ),
                                 ),
                                 DropdownMenuItem(
-                                  value: "Restaurant",
+                                  value: ValueConstants.restaurant,
                                   child: Text(
-                                    "Restaurante",
-                                    style: TextStyle(color: Colors.deepPurple),
+                                    AppLocalizations.of(context)!.restaurant,
+                                    style: const TextStyle(
+                                        color: Colors.deepPurple),
                                   ),
                                 )
                               ]
-                            : const [
+                            : [
                                 DropdownMenuItem(
-                                  value: "FoodType",
+                                  value: ValueConstants.foodType,
                                   child: Text(
-                                    "Comida",
-                                    style: TextStyle(color: Colors.deepPurple),
+                                    AppLocalizations.of(context)!.foodType,
+                                    style: const TextStyle(
+                                        color: Colors.deepPurple),
                                   ),
                                 ),
                               ],
-                        "Tipo",
+                        AppLocalizations.of(context)!.type,
                         (option) => setState(() {
                               controller.option = option!;
                             }),
                         controller.option),
-                    controller.option == "Restaurant"
-                        ? widgets.dropdown(
-                            controller.foodTypeItems, "Culinária", (option) {
+                    controller.option == ValueConstants.restaurant
+                        ? widgets.dropdown(controller.foodTypeItems,
+                            AppLocalizations.of(context)!.culinary, (option) {
                             controller.foodType = option;
                           }, controller.foodType)
                         : Container(),
-                    widgets.textField(controller.titleController, "Título"),
+                    widgets.textField(controller.titleController,
+                        AppLocalizations.of(context)!.title),
                     widgets.imagePicker(controller.image, () async {
                       await controller.pickImage();
                       setState(() {});
-                    }),
+                    }, context),
                     widgets.button(
                         Colors.deepPurple,
                         0.85,
                         () => controller.register(),
-                        const Text("Cadastrar",
-                            style: TextStyle(
+                        Text(AppLocalizations.of(context)!.register,
+                            style: const TextStyle(
                                 fontSize: 10,
                                 color: Colors.white,
                                 fontWeight: FontWeight.bold)),

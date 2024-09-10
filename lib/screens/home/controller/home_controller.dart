@@ -146,11 +146,11 @@ class HomeController {
                             Row(
                               children: [
                                 const Expanded(child: SizedBox()),
-                                const Expanded(
+                                Expanded(
                                   flex: 6,
                                   child: Text(
-                                    "Leia o QR Code na tela do seu parceiro",
-                                    style: TextStyle(fontSize: 12),
+                                    AppLocalizations.of(context)!.readPartnerQR,
+                                    style: const TextStyle(fontSize: 12),
                                   ),
                                 ),
                                 Expanded(
@@ -183,8 +183,8 @@ class HomeController {
                     ),
                   );
                 },
-                    const Text("Ler QR Code",
-                        style: TextStyle(
+                    Text(AppLocalizations.of(context)!.readQR,
+                        style: const TextStyle(
                             fontSize: 10,
                             color: Colors.deepPurple,
                             fontWeight: FontWeight.bold)),
