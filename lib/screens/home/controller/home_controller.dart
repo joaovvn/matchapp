@@ -1,5 +1,5 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
@@ -10,45 +10,43 @@ import 'package:qr_flutter/qr_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-class HomeController {
+class HomeController extends GetxController {
   HomeController({required this.context});
   BuildContext context;
   late SharedPreferences preferences;
   WidgetConstants widgets = WidgetConstants();
-  ValueNotifier<String?> coupleId = ValueNotifier(null);
+  Rx<String?> coupleId = null.obs;
 
   Future<bool> init() async {
-    preferences = await SharedPreferences.getInstance();
-    coupleId.value = preferences.getString("coupleId");
-    DocumentSnapshot<Map<String, dynamic>> data;
+    String? key;
     if (coupleId.value == null) {
-      QuerySnapshot<Map<String, dynamic>> couple = await FirebaseFirestore
-          .instance
-          .collection("Couples")
-          .where("firstId", isEqualTo: FirebaseAuth.instance.currentUser?.uid)
-          .get();
-      data = couple.docs[0];
-      if (data.data() == null) {
-        QuerySnapshot<Map<String, dynamic>> couple = await FirebaseFirestore
-            .instance
-            .collection("Couples")
-            .where("secondId",
-                isEqualTo: FirebaseAuth.instance.currentUser?.uid)
-            .get();
-        data = couple.docs[0];
+      FirebaseDatabase.instance
+          .ref('couples')
+          .orderByChild('firstId')
+          .equalTo(FirebaseAuth.instance.currentUser?.uid)
+          .once()
+          .then((DatabaseEvent event) {
+        key = event.snapshot.children.first.key;
+      });
+      if (key == null) {
+        FirebaseDatabase.instance
+            .ref('couples')
+            .orderByChild('secondId')
+            .equalTo(FirebaseAuth.instance.currentUser?.uid)
+            .once()
+            .then((DatabaseEvent event) {
+          key = event.snapshot.children.first.key;
+        });
       }
     } else {
-      data = await FirebaseFirestore.instance
-          .collection("Couples")
-          .doc(coupleId.value)
-          .get();
+      key = FirebaseDatabase.instance.ref('couples/${coupleId.value}').key;
     }
-    if (data.data() == null) {
+    if (key == null) {
       preferences.remove("coupleId");
       coupleId.value = null;
     } else {
-      preferences.setString("coupleId", data.id);
-      coupleId.value = data.id;
+      preferences.setString("coupleId", key!);
+      coupleId.value = key;
       verifyRemovedPartner();
     }
     return true;
@@ -64,27 +62,28 @@ class HomeController {
   }
 
   removePartner() async {
-    await FirebaseFirestore.instance
-        .collection("Couples")
-        .doc(coupleId.value)
-        .delete();
-    preferences.remove("coupleId");
-    coupleId.value = null;
+    FirebaseDatabase.instance
+        .ref('couples/${coupleId.value}')
+        .remove()
+        .then((_) {
+      preferences.remove("coupleId");
+      coupleId.value = null;
+    }).catchError((_) {
+      //TODO: tratar erro
+    });
   }
 
   verifyRemovedPartner() async {
-    DocumentSnapshot<Map<String, dynamic>> data = await FirebaseFirestore
-        .instance
-        .collection("Couples")
-        .doc(coupleId.value)
-        .get();
-    if (!data.exists) {
-      preferences.remove("coupleId");
-      coupleId.value = null;
-      showRemovedPartner();
-    } else {
-      await verifyRemovedPartner();
-    }
+    FirebaseDatabase.instance
+        .ref('couples/${coupleId.value}')
+        .onValue
+        .listen((DatabaseEvent event) {
+      if (!event.snapshot.exists) {
+        preferences.remove("coupleId");
+        coupleId.value = null;
+        showRemovedPartner();
+      }
+    });
   }
 
   addPartner() {
@@ -171,7 +170,6 @@ class HomeController {
                                 controller: MobileScannerController(
                                     detectionSpeed:
                                         DetectionSpeed.noDuplicates),
-                                // scanWindow: Rect.zero,
                                 fit: BoxFit.contain,
                                 onDetect: (capture) async {
                                   await onQrFound(capture);
@@ -202,14 +200,16 @@ class HomeController {
         id: "",
         firstId: FirebaseAuth.instance.currentUser!.uid,
         secondId: barcodes[0].rawValue!);
-    DocumentReference<Map<String, dynamic>> data = await FirebaseFirestore
-        .instance
-        .collection('Couples')
-        .add(couple.toJson());
-    SharedPreferences preferences = await SharedPreferences.getInstance();
-    preferences.setString("coupleId", data.id);
-    coupleId.value = data.id;
-    onPartnerAdded();
+    DatabaseReference databaseReference =
+        FirebaseDatabase.instance.ref().child('couples').push();
+
+    databaseReference.set(couple.toJson()).then((_) {
+      preferences.setString("coupleId", databaseReference.key!);
+      coupleId.value = databaseReference.key;
+      onPartnerAdded();
+    }).catchError((_) {
+      //TODO: tratar erro.
+    });
   }
 
   onPartnerAdded() {
@@ -218,18 +218,17 @@ class HomeController {
   }
 
   verifyAddedPartner() async {
-    QuerySnapshot<Map<String, dynamic>> data = await FirebaseFirestore.instance
-        .collection("Couples")
-        .where("secondId", isEqualTo: FirebaseAuth.instance.currentUser!.uid)
-        .get();
-    List<Couple> couple =
-        data.docs.map((doc) => Couple.fromJson(doc.data(), doc.id)).toList();
-    if (couple.isNotEmpty) {
-      preferences.setString("coupleId", couple[0].id);
-      coupleId.value = couple[0].id;
-      onPartnerAdded();
-    } else {
-      verifyAddedPartner();
-    }
+    FirebaseDatabase.instance
+        .ref('couples')
+        .orderByChild('secondId')
+        .equalTo(FirebaseAuth.instance.currentUser!.uid)
+        .onValue
+        .listen((DatabaseEvent event) {
+      if (event.snapshot.exists) {
+        preferences.setString("coupleId", event.snapshot.children.first.key!);
+        coupleId.value = event.snapshot.children.first.key;
+        onPartnerAdded();
+      }
+    });
   }
 }
