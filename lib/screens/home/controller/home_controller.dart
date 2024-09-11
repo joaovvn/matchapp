@@ -6,7 +6,7 @@ import 'package:get/get.dart';
 import 'package:match_app/constants/function_constants.dart';
 import 'package:match_app/constants/widget_constants.dart';
 import 'package:match_app/models/couple.dart';
-import 'package:mobile_scanner/mobile_scanner.dart';
+import 'package:qr_code_dart_scan/qr_code_dart_scan.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -172,12 +172,8 @@ class HomeController extends GetxController {
                             ),
                             SizedBox(
                               height: MediaQuery.of(context).size.height * 0.3,
-                              child: MobileScanner(
-                                controller: MobileScannerController(
-                                    detectionSpeed:
-                                        DetectionSpeed.noDuplicates),
-                                fit: BoxFit.contain,
-                                onDetect: (capture) async {
+                              child: QRCodeDartScanView(
+                                onCapture: (capture) async {
                                   await onQrFound(capture);
                                 },
                               ),
@@ -200,12 +196,11 @@ class HomeController extends GetxController {
         });
   }
 
-  onQrFound(BarcodeCapture capture) async {
-    final List<Barcode> barcodes = capture.barcodes;
+  onQrFound(Result capture) async {
     Couple couple = Couple(
         id: "",
         firstId: FirebaseAuth.instance.currentUser!.uid,
-        secondId: barcodes[0].rawValue!);
+        secondId: capture.text);
     DatabaseReference databaseReference =
         FirebaseDatabase.instance.ref().child('couples').push();
 
