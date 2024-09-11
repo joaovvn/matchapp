@@ -2,6 +2,7 @@ import 'package:appinio_swiper/appinio_swiper.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:match_app/constants/value_constants.dart';
 import 'package:match_app/constants/widget_constants.dart';
 import 'package:match_app/models/couple.dart';
 import 'package:match_app/models/food_type.dart';
@@ -17,14 +18,12 @@ class FoodTypeMatchController {
 
   Future<List<FoodType>?> getList() async {
     await getUser();
+    debugPrint(coupleId);
     if (coupleId == "") {
       return null;
     }
-    DatabaseEvent foodEvent = await FirebaseDatabase.instance
-        .ref("foodType")
-        .orderByChild("coupleId")
-        .equalTo(coupleId)
-        .once();
+    DatabaseEvent foodEvent =
+        await FirebaseDatabase.instance.ref(ValueConstants.foodType).once();
 
     return foodEvent.snapshot.children
         .map((child) => FoodType.fromJson(
@@ -34,7 +33,7 @@ class FoodTypeMatchController {
 
   getUser() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
-    String? id = preferences.getString("coupleId");
+    String? id = preferences.getString(ValueConstants.coupleId);
     if (id != null) {
       coupleId = id;
       DatabaseEvent coupleEvent =
@@ -43,9 +42,9 @@ class FoodTypeMatchController {
           Map<String, dynamic>.from(coupleEvent.snapshot.value as Map),
           coupleEvent.snapshot.key!);
       if (couple.firstId == FirebaseAuth.instance.currentUser!.uid) {
-        voteId = "firstVote";
+        voteId = ValueConstants.firstVote;
       } else {
-        voteId = "secondVote";
+        voteId = ValueConstants.secondVote;
       }
     } else {
       openNoPartnerDialog();
@@ -61,8 +60,8 @@ class FoodTypeMatchController {
 
   verifyMatches(bool last) async {
     DatabaseEvent foodEvent = await FirebaseDatabase.instance
-        .ref("foodType")
-        .orderByChild("coupleId")
+        .ref(ValueConstants.foodType)
+        .orderByChild(ValueConstants.coupleId)
         .equalTo(coupleId)
         .once();
 

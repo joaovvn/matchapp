@@ -16,12 +16,14 @@ class HomeController extends GetxController {
   BuildContext context;
   late SharedPreferences preferences;
   WidgetConstants widgets = WidgetConstants();
-  Rx<String?> coupleId = null.obs;
+  RxString coupleId = "".obs;
+  RxBool isEnglish = (Get.locale == const Locale("en")).obs;
 
   Future<bool> init() async {
     String? key;
-    if (coupleId.value == null) {
-      FirebaseDatabase.instance
+    preferences = await SharedPreferences.getInstance();
+    if (coupleId.isEmpty) {
+      await FirebaseDatabase.instance
           .ref('couples')
           .orderByChild('firstId')
           .equalTo(FirebaseAuth.instance.currentUser?.uid)
@@ -48,10 +50,10 @@ class HomeController extends GetxController {
     }
     if (key == null) {
       preferences.remove("coupleId");
-      coupleId.value = null;
+      coupleId.value = "";
     } else {
       preferences.setString("coupleId", key!);
-      coupleId.value = key;
+      coupleId.value = key!;
       FunctionConstants.resetVotes();
       verifyRemovedPartner();
     }
@@ -60,7 +62,6 @@ class HomeController extends GetxController {
 
   showAddedPartner() {
     widgets.addedPartner(context);
-    verifyRemovedPartner();
   }
 
   showRemovedPartner() {
@@ -73,7 +74,7 @@ class HomeController extends GetxController {
         .remove()
         .then((_) {
       preferences.remove("coupleId");
-      coupleId.value = null;
+      coupleId.value = "";
     }).catchError((_) {
       //TODO: tratar erro
     });
@@ -86,7 +87,7 @@ class HomeController extends GetxController {
         .listen((DatabaseEvent event) {
       if (!event.snapshot.exists) {
         preferences.remove("coupleId");
-        coupleId.value = null;
+        coupleId.value = "";
         showRemovedPartner();
       }
     });
@@ -204,11 +205,11 @@ class HomeController extends GetxController {
     DatabaseReference databaseReference =
         FirebaseDatabase.instance.ref().child('couples').push();
 
-    databaseReference.set(couple.toJson()).then((_) {
+    await databaseReference.set(couple.toJson()).then((_) {
       preferences.setString("coupleId", databaseReference.key!);
-      coupleId.value = databaseReference.key;
+      coupleId.value = databaseReference.key!;
       onPartnerAdded();
-    }).catchError((_) {
+    }).catchError((e) {
       //TODO: tratar erro.
     });
   }
@@ -227,7 +228,7 @@ class HomeController extends GetxController {
         .listen((DatabaseEvent event) {
       if (event.snapshot.exists) {
         preferences.setString("coupleId", event.snapshot.children.first.key!);
-        coupleId.value = event.snapshot.children.first.key;
+        coupleId.value = event.snapshot.children.first.key!;
         onPartnerAdded();
       }
     });

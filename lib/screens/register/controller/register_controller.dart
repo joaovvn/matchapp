@@ -88,8 +88,9 @@ class RegisterController {
       ));
       return;
     }
-    await FirebaseDatabase.instance.ref(option).set(
-        option == ValueConstants.foodType
+    DatabaseReference reference = FirebaseDatabase.instance.ref(option).push();
+    await reference
+        .set(option == ValueConstants.foodType
             ? FoodType(
                     id: "",
                     title: titleController.text,
@@ -105,7 +106,10 @@ class RegisterController {
                     title: titleController.text,
                     image: image != null ? base64.encode(image!.toList()) : "",
                     foodTypeId: foodType!)
-                .toJson());
+                .toJson())
+        .catchError((e) {
+      debugPrint(e);
+    });
     showRegisterDialog();
   }
 
