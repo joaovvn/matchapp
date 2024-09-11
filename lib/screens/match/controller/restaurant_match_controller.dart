@@ -1,6 +1,6 @@
 import 'package:appinio_swiper/appinio_swiper.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:match_app/constants/function_constants.dart';
 import 'package:match_app/constants/widget_constants.dart';
@@ -19,26 +19,31 @@ class RestaurantMatchController {
 
   Future<List<Restaurant>> getList() async {
     await getUser();
-    QuerySnapshot<Map<String, dynamic>> mapRestaurant = await FirebaseFirestore
-        .instance
-        .collection('Restaurant')
-        .where("foodTypeId", isEqualTo: foodTypeId)
-        .get();
-    if (mapRestaurant.docs.isEmpty) {
-      FunctionConstants().resetVotes();
+    DatabaseEvent restaurantEvent = await FirebaseDatabase.instance
+        .ref("restaurant")
+        .orderByChild("foodTypeId")
+        .equalTo(foodTypeId)
+        .once();
+
+    if (!restaurantEvent.snapshot.exists) {
+      FunctionConstants.resetVotes();
     }
-    return mapRestaurant.docs
-        .map((doc) => Restaurant.fromJson(doc.data(), doc.id))
+    return restaurantEvent.snapshot.children
+        .map((child) => Restaurant.fromJson(
+            Map<String, dynamic>.from(child.value as Map), child.key!))
         .toList();
   }
 
   Future<bool> hasMenu(String restaurantName) async {
     await getUser();
-    QuerySnapshot<Map<String, dynamic>> menu = await FirebaseFirestore.instance
-        .collection('Menu')
-        .where("restaurant", isEqualTo: restaurantName)
-        .get();
-    if (menu.docs.isEmpty) {
+
+    DatabaseEvent restaurantEvent = await FirebaseDatabase.instance
+        .ref('menu')
+        .orderByChild('restaurant')
+        .equalTo(restaurantName)
+        .once();
+
+    if (!restaurantEvent.snapshot.exists) {
       return false;
     }
     return true;
@@ -49,12 +54,11 @@ class RestaurantMatchController {
     String? id = preferences.getString("coupleId");
     if (id != null) {
       coupleId = id;
-      DocumentSnapshot<Map<String, dynamic>> data = await FirebaseFirestore
-          .instance
-          .collection("Couples")
-          .doc(coupleId)
-          .get();
-      Couple couple = Couple.fromJson(data.data()!, coupleId);
+      DatabaseEvent coupleEvent =
+          await FirebaseDatabase.instance.ref('couples/$coupleId').once();
+      Couple couple = Couple.fromJson(
+          Map<String, dynamic>.from(coupleEvent.snapshot.value as Map),
+          coupleEvent.snapshot.key!);
       if (couple.firstId == FirebaseAuth.instance.currentUser!.uid) {
         voteId = "firstVote";
       } else {
@@ -66,20 +70,22 @@ class RestaurantMatchController {
   }
 
   vote(Restaurant restaurant, SwiperActivity activity, bool last) async {
-    await FirebaseFirestore.instance
-        .collection('Restaurant')
-        .doc(restaurant.id)
+    await FirebaseDatabase.instance
+        .ref('restaurant/${restaurant.id}')
         .update({voteId: activity.direction == AxisDirection.right ? 1 : -1});
     await verifyMatches(last);
   }
 
   verifyMatches(bool last) async {
-    QuerySnapshot<Map<String, dynamic>> data = await FirebaseFirestore.instance
-        .collection('Restaurant')
-        .where("foodTypeId", isEqualTo: foodTypeId)
-        .get();
-    List<Restaurant> matches = data.docs
-        .map((doc) => Restaurant.fromJson(doc.data(), doc.id))
+    DatabaseEvent restaurantEvent = await FirebaseDatabase.instance
+        .ref('restaurant')
+        .orderByChild('foodTypeId')
+        .equalTo(foodTypeId)
+        .once();
+
+    List<Restaurant> matches = restaurantEvent.snapshot.children
+        .map((child) => Restaurant.fromJson(
+            Map<String, dynamic>.from(child.value as Map), child.key!))
         .toList();
     if (matches.isNotEmpty &&
         matches.any((element) =>

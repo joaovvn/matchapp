@@ -1,4 +1,4 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/state_manager.dart';
@@ -20,13 +20,15 @@ class SalesController extends GetxController {
   }
 
   getList() async {
-    QuerySnapshot<Map<String, dynamic>> mapMenu = await FirebaseFirestore
-        .instance
-        .collection('Menu')
-        .where("restaurant", isEqualTo: restaurant.title)
-        .get();
-    menu.assignAll(
-        mapMenu.docs.map((doc) => MenuItem.fromJson(doc.data())).toList());
+    DatabaseEvent restaurantEvent = await FirebaseDatabase.instance
+        .ref('menu')
+        .orderByChild('restaurant')
+        .equalTo(restaurant.title)
+        .once();
+    menu.assignAll(restaurantEvent.snapshot.children
+        .map((child) =>
+            MenuItem.fromJson(Map<String, dynamic>.from(child.value as Map)))
+        .toList());
   }
 
   String getTotalPrice() {

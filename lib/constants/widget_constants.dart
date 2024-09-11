@@ -14,7 +14,6 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class WidgetConstants {
-  FunctionConstants functions = FunctionConstants();
   Widget button(Color color, double width, Function()? onPressed, Widget child,
       BuildContext context) {
     return ElevatedButton(
@@ -215,7 +214,7 @@ class WidgetConstants {
                             bottom: 20.0),
                         child: button(Colors.deepPurple, 0.9, () {
                           Get.until((route) => route.isFirst);
-                          functions.resetVotes();
+                          FunctionConstants.resetVotes();
                         },
                             Text(AppLocalizations.of(context)!.ok,
                                 style: const TextStyle(
@@ -404,7 +403,7 @@ class WidgetConstants {
                             horizontal: screenSize.width * 0.05,
                             vertical: 20.0),
                         child: button(Colors.deepPurple, 0.9, () {
-                          functions.resetVotes();
+                          FunctionConstants.resetVotes();
                           Get.until((route) => route.isFirst);
                         },
                             Text(AppLocalizations.of(context)!.backToHome,

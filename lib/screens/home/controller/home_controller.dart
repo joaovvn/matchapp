@@ -3,6 +3,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
+import 'package:match_app/constants/function_constants.dart';
 import 'package:match_app/constants/widget_constants.dart';
 import 'package:match_app/models/couple.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
@@ -26,7 +27,9 @@ class HomeController extends GetxController {
           .equalTo(FirebaseAuth.instance.currentUser?.uid)
           .once()
           .then((DatabaseEvent event) {
-        key = event.snapshot.children.first.key;
+        if (event.snapshot.exists) {
+          key = event.snapshot.children.first.key;
+        }
       });
       if (key == null) {
         FirebaseDatabase.instance
@@ -35,7 +38,9 @@ class HomeController extends GetxController {
             .equalTo(FirebaseAuth.instance.currentUser?.uid)
             .once()
             .then((DatabaseEvent event) {
-          key = event.snapshot.children.first.key;
+          if (event.snapshot.exists) {
+            key = event.snapshot.children.first.key;
+          }
         });
       }
     } else {
@@ -47,6 +52,7 @@ class HomeController extends GetxController {
     } else {
       preferences.setString("coupleId", key!);
       coupleId.value = key;
+      FunctionConstants.resetVotes();
       verifyRemovedPartner();
     }
     return true;

@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
@@ -29,13 +29,15 @@ class RegisterController {
     if (coupleId == null) {
       openNoPartnerDialog();
     } else {
-      QuerySnapshot<Map<String, dynamic>> mapFoodType = await FirebaseFirestore
-          .instance
-          .collection(ValueConstants.foodType)
-          .where(ValueConstants.coupleId, isEqualTo: coupleId)
-          .get();
-      List<FoodType> foodTypes = mapFoodType.docs
-          .map((doc) => FoodType.fromJson(doc.data(), doc.id))
+      DatabaseEvent foodEvent = await FirebaseDatabase.instance
+          .ref("foodType")
+          .orderByChild("coupleId")
+          .equalTo(coupleId)
+          .once();
+
+      List<FoodType> foodTypes = foodEvent.snapshot.children
+          .map((child) => FoodType.fromJson(
+              Map<String, dynamic>.from(child.value as Map), child.key!))
           .toList();
 
       if (foodTypes.isNotEmpty && foodType == null) {
@@ -86,7 +88,7 @@ class RegisterController {
       ));
       return;
     }
-    await FirebaseFirestore.instance.collection(option).add(
+    await FirebaseDatabase.instance.ref(option).set(
         option == ValueConstants.foodType
             ? FoodType(
                     id: "",

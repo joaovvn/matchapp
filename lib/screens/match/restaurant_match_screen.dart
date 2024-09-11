@@ -32,7 +32,7 @@ class _RestaurantMatchScreenState extends State<RestaurantMatchScreen> {
         context: context, foodTypeId: widget.foodTypeId);
     return Scaffold(
       appBar: widgets.appBar(false, context,
-          onPressed: FunctionConstants().resetVotes),
+          onPressed: FunctionConstants.resetVotes),
       body: FutureBuilder(
           future: controller.getList(),
           builder: (context, list) {

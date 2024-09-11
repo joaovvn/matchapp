@@ -24,7 +24,6 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     controller = Get.put(HomeController(context: context));
-    FunctionConstants().resetVotes();
     super.initState();
   }
 
@@ -52,7 +51,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             widgets.button(Colors.deepPurple, 0.5, () {
-                              FunctionConstants().resetVotes();
+                              FunctionConstants.resetVotes();
                               Get.to(() => const FoodTypeMatchScreen());
                             },
                                 Text(

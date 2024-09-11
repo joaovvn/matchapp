@@ -27,7 +27,7 @@ class _SalesScreenState extends State<SalesScreen> {
     controller.init(restaurant: widget.restaurant, context: context);
     return Scaffold(
         appBar: widgets.appBar(false, context, onPressed: () {
-          FunctionConstants().resetVotes;
+          FunctionConstants.resetVotes;
         }),
         floatingActionButton:
             shoppingCartFloatingActionButton(context, controller),
