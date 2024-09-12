@@ -16,21 +16,25 @@ class FoodTypeMatchController extends GetxController {
   String voteId = "";
   String coupleId = "";
   bool match = false;
-  RxList<FoodType>? foodTypeList;
+  Rx<List<FoodType>?> foodTypeList = Rx<List<FoodType>?>(null);
 
   void getList() async {
     await getUser();
     if (coupleId == "") {
       return null;
     }
-    DatabaseEvent foodEvent =
-        await FirebaseDatabase.instance.ref(ValueConstants.foodType).once();
+    DatabaseEvent foodEvent = await FirebaseDatabase.instance
+        .ref(ValueConstants.foodType)
+        .orderByChild(ValueConstants.coupleId)
+        .equalTo(coupleId)
+        .once();
 
-    foodTypeList = foodEvent.snapshot.children
+    foodTypeList.value = List<FoodType>.empty();
+
+    foodTypeList.value = foodEvent.snapshot.children
         .map((child) => FoodType.fromJson(
             Map<String, dynamic>.from(child.value as Map), child.key!))
-        .toList()
-        .obs;
+        .toList();
   }
 
   getUser() async {

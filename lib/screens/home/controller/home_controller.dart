@@ -20,9 +20,17 @@ class HomeController extends GetxController {
   RxString coupleId = "".obs;
   RxBool isEnglish = (Get.locale == const Locale("en")).obs;
 
-  Future<bool> init() async {
+  init() async {
     String? key;
     preferences = await SharedPreferences.getInstance();
+    String? language = preferences.getString('locale');
+    if (language == null) {
+      preferences.setString('locale', 'en');
+      language = 'en';
+    } else if (language == 'en') {
+      isEnglish.value = true;
+    }
+    Get.updateLocale(Locale(language));
     if (coupleId.isEmpty) {
       await FirebaseDatabase.instance
           .ref(ValueConstants.couples)
@@ -35,7 +43,7 @@ class HomeController extends GetxController {
         }
       });
       if (key == null) {
-        FirebaseDatabase.instance
+        await FirebaseDatabase.instance
             .ref(ValueConstants.couples)
             .orderByChild(ValueConstants.secondId)
             .equalTo(FirebaseAuth.instance.currentUser?.uid)
@@ -60,7 +68,6 @@ class HomeController extends GetxController {
       FunctionConstants.resetVotes();
       verifyRemovedPartner();
     }
-    return true;
   }
 
   showAddedPartner() {

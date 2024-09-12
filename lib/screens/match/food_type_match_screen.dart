@@ -28,11 +28,12 @@ class _FoodTypeMatchScreenState extends State<FoodTypeMatchScreen> {
   Widget build(BuildContext context) {
     FoodTypeMatchController controller =
         Get.put(FoodTypeMatchController(context: context));
+    controller.getList();
     return Scaffold(
       appBar: widgets.appBar(false, context),
       body: Obx(() {
-        if (controller.foodTypeList != null &&
-            (controller.foodTypeList ?? []).isNotEmpty) {
+        if (controller.foodTypeList.value != null &&
+            (controller.foodTypeList.value ?? []).isNotEmpty) {
           return Column(
             children: [
               Expanded(
@@ -56,15 +57,15 @@ class _FoodTypeMatchScreenState extends State<FoodTypeMatchScreen> {
                               const SwipeOptions.symmetric(horizontal: true),
                           allowUnSwipe: false,
                           controller: swiperController,
-                          cardCount: controller.foodTypeList!.length,
+                          cardCount: controller.foodTypeList.value!.length,
                           onEnd: () => setState(() {
                             finished = true;
                           }),
                           onSwipeEnd: (previousIndex, index, direction) async {
                             await controller.vote(
-                                controller.foodTypeList![index - 1],
+                                controller.foodTypeList.value![index - 1],
                                 direction,
-                                controller.foodTypeList!.length == index);
+                                controller.foodTypeList.value!.length == index);
                           },
                           cardBuilder: (BuildContext context, int index) {
                             return Container(
@@ -81,7 +82,7 @@ class _FoodTypeMatchScreenState extends State<FoodTypeMatchScreen> {
                                           top: Radius.circular(20)),
                                       child: Image.memory(
                                         base64Decode(controller
-                                            .foodTypeList![index].image),
+                                            .foodTypeList.value![index].image),
                                         gaplessPlayback: true,
                                         fit: BoxFit.fitHeight,
                                       ),
@@ -95,7 +96,8 @@ class _FoodTypeMatchScreenState extends State<FoodTypeMatchScreen> {
                                       child: FittedBox(
                                         fit: BoxFit.fitWidth,
                                         child: Text(
-                                          controller.foodTypeList![index].title,
+                                          controller
+                                              .foodTypeList.value![index].title,
                                           style: const TextStyle(
                                             fontWeight: FontWeight.bold,
                                           ),
@@ -142,7 +144,7 @@ class _FoodTypeMatchScreenState extends State<FoodTypeMatchScreen> {
             ],
           );
         }
-        return controller.foodTypeList == null
+        return controller.foodTypeList.value == null
             ? const Center(
                 child: CircularProgressIndicator(
                   color: Colors.deepPurple,
