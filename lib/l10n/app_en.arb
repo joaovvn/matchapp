@@ -27,5 +27,13 @@
     "noMatch": "NO MATCHES!!",
     "image": "Image",
     "partnerAdded": "Partner added!! Now just enjoy.",
-    "partnerRemoved": "Partner removed!!"
+    "partnerRemoved": "Partner removed!!",
+    "noProducts": "There are no products in the cart!",
+    "items": "Items",
+    "total": "Total",
+    "finalize": "Finalize",
+    "added": "added!",
+    "removed": "removed!",
+    "errorRemovingPartner": "Error while removing partner! Try again later.",
+    "errorConnectingPartner": "Error while connecting partner! Try again later."
 }

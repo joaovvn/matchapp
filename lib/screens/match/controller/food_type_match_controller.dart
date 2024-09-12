@@ -2,33 +2,35 @@ import 'package:appinio_swiper/appinio_swiper.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:match_app/constants/value_constants.dart';
 import 'package:match_app/constants/widget_constants.dart';
 import 'package:match_app/models/couple.dart';
 import 'package:match_app/models/food_type.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class FoodTypeMatchController {
+class FoodTypeMatchController extends GetxController {
   FoodTypeMatchController({required this.context});
   BuildContext context;
   WidgetConstants widgets = WidgetConstants();
   String voteId = "";
   String coupleId = "";
   bool match = false;
+  RxList<FoodType>? foodTypeList;
 
-  Future<List<FoodType>?> getList() async {
+  void getList() async {
     await getUser();
-    debugPrint(coupleId);
     if (coupleId == "") {
       return null;
     }
     DatabaseEvent foodEvent =
         await FirebaseDatabase.instance.ref(ValueConstants.foodType).once();
 
-    return foodEvent.snapshot.children
+    foodTypeList = foodEvent.snapshot.children
         .map((child) => FoodType.fromJson(
             Map<String, dynamic>.from(child.value as Map), child.key!))
-        .toList();
+        .toList()
+        .obs;
   }
 
   getUser() async {
@@ -36,8 +38,9 @@ class FoodTypeMatchController {
     String? id = preferences.getString(ValueConstants.coupleId);
     if (id != null) {
       coupleId = id;
-      DatabaseEvent coupleEvent =
-          await FirebaseDatabase.instance.ref('couples/$coupleId').once();
+      DatabaseEvent coupleEvent = await FirebaseDatabase.instance
+          .ref('${ValueConstants.couples}/$coupleId')
+          .once();
       Couple couple = Couple.fromJson(
           Map<String, dynamic>.from(coupleEvent.snapshot.value as Map),
           coupleEvent.snapshot.key!);
@@ -53,7 +56,7 @@ class FoodTypeMatchController {
 
   vote(FoodType foodType, SwiperActivity activity, bool last) async {
     await FirebaseDatabase.instance
-        .ref('foodType/${foodType.id}')
+        .ref('${ValueConstants.foodType}/${foodType.id}')
         .update({voteId: activity.direction == AxisDirection.right ? 1 : -1});
     await verifyMatches(last);
   }

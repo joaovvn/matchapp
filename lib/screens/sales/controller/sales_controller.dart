@@ -2,9 +2,11 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/state_manager.dart';
+import 'package:match_app/constants/value_constants.dart';
 import 'package:match_app/constants/widget_constants.dart';
 import 'package:match_app/models/menu_item.dart';
 import 'package:match_app/models/restaurant.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class SalesController extends GetxController {
   WidgetConstants widgets = WidgetConstants();
@@ -21,8 +23,8 @@ class SalesController extends GetxController {
 
   getList() async {
     DatabaseEvent restaurantEvent = await FirebaseDatabase.instance
-        .ref('menu')
-        .orderByChild('restaurant')
+        .ref(ValueConstants.menu)
+        .orderByChild(ValueConstants.restaurant)
         .equalTo(restaurant.title)
         .once();
     menu.assignAll(restaurantEvent.snapshot.children
@@ -47,7 +49,7 @@ class SalesController extends GetxController {
     return total.toString();
   }
 
-  void addItemToCart(MenuItem item, RxInt quantity) {
+  void addItemToCart(MenuItem item, RxInt quantity, BuildContext context) {
     if (shoppingCart.contains(item)) {
       shoppingCart
           .firstWhere((product) => item.itemName == product.itemName)
@@ -56,12 +58,14 @@ class SalesController extends GetxController {
       item.quantity = quantity.value;
       shoppingCart.add(item);
     }
-    widgets.showWarning(_context, "${item.itemName} adicionado com sucesso!");
+    widgets.showWarning(
+        _context, "${item.itemName} ${AppLocalizations.of(context)!.added}");
   }
 
-  removeItemFromCart(int index) {
+  removeItemFromCart(int index, BuildContext context) {
     String itemName = shoppingCart[index].itemName;
     shoppingCart.removeAt(index);
-    widgets.showWarning(_context, "$itemName removido com sucesso!");
+    widgets.showWarning(
+        _context, "$itemName ${AppLocalizations.of(context)!.removed}");
   }
 }

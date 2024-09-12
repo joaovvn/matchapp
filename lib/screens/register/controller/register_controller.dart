@@ -30,8 +30,8 @@ class RegisterController {
       openNoPartnerDialog();
     } else {
       DatabaseEvent foodEvent = await FirebaseDatabase.instance
-          .ref("foodType")
-          .orderByChild("coupleId")
+          .ref(ValueConstants.foodType)
+          .orderByChild(ValueConstants.coupleId)
           .equalTo(coupleId)
           .once();
 

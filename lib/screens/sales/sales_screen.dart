@@ -8,6 +8,7 @@ import 'package:match_app/constants/widget_constants.dart';
 import 'package:match_app/models/menu_item.dart';
 import 'package:match_app/models/restaurant.dart';
 import 'package:match_app/screens/sales/controller/sales_controller.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class SalesScreen extends StatefulWidget {
   const SalesScreen({super.key, required this.restaurant});
@@ -98,7 +99,7 @@ class _SalesScreenState extends State<SalesScreen> {
                                 IconButton(
                                     onPressed: () {
                                       controller.addItemToCart(
-                                          menu[index], quantity);
+                                          menu[index], quantity, context);
                                       quantity.value = 1;
                                     },
                                     icon: const Icon(
@@ -150,13 +151,13 @@ class _SalesScreenState extends State<SalesScreen> {
                   padding: const EdgeInsets.symmetric(
                       vertical: 25.0, horizontal: 10.0),
                   child: controller.shoppingCart.isEmpty
-                      ? const Center(
+                      ? Center(
                           child: Padding(
-                            padding: EdgeInsets.all(30.0),
+                            padding: const EdgeInsets.all(30.0),
                             child: Text(
-                              "Não há produtos no carrinho!",
+                              AppLocalizations.of(context)!.noProducts,
                               textAlign: TextAlign.center,
-                              style: TextStyle(
+                              style: const TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 25,
                                   color: Colors.deepPurple),
@@ -231,7 +232,7 @@ class _SalesScreenState extends State<SalesScreen> {
                                                   onPressed: () {
                                                     controller
                                                         .removeItemFromCart(
-                                                            index);
+                                                            index, context);
                                                   },
                                                   icon: const Icon(
                                                     Icons
@@ -257,9 +258,9 @@ class _SalesScreenState extends State<SalesScreen> {
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
                                     children: [
-                                      const Text(
-                                        "Itens",
-                                        style: TextStyle(
+                                      Text(
+                                        AppLocalizations.of(context)!.items,
+                                        style: const TextStyle(
                                             color: Colors.deepPurple,
                                             fontSize: 14,
                                             fontWeight: FontWeight.bold),
@@ -298,9 +299,9 @@ class _SalesScreenState extends State<SalesScreen> {
                                       Colors.deepPurple,
                                       0.3,
                                       () {},
-                                      const Text(
-                                        "Finalizar",
-                                        style: TextStyle(
+                                      Text(
+                                        AppLocalizations.of(context)!.finalize,
+                                        style: const TextStyle(
                                             color: Colors.white,
                                             fontSize: 15,
                                             fontWeight: FontWeight.bold),

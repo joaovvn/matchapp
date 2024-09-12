@@ -1,3 +1,5 @@
+import 'package:match_app/constants/value_constants.dart';
+
 class FoodType {
   String id;
   String coupleId;
@@ -17,21 +19,21 @@ class FoodType {
   factory FoodType.fromJson(Map<String, dynamic> json, String id) {
     return FoodType(
       id: id,
-      title: json['title'],
-      coupleId: json['coupleId'],
-      image: json['image'],
-      firstVote: json['firstVote'],
-      secondVote: json['secondVote'],
+      title: json[ValueConstants.title],
+      coupleId: json[ValueConstants.coupleId],
+      image: json[ValueConstants.image],
+      firstVote: json[ValueConstants.firstVote],
+      secondVote: json[ValueConstants.secondVote],
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'title': title,
-      'image': image,
-      'coupleId': coupleId,
-      'firstVote': firstVote,
-      'secondVote': secondVote
+      ValueConstants.title: title,
+      ValueConstants.image: image,
+      ValueConstants.coupleId: coupleId,
+      ValueConstants.firstVote: firstVote,
+      ValueConstants.secondVote: secondVote
     };
   }
 }

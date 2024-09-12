@@ -27,5 +27,13 @@
     "noMatch": "NENHUM MATCH!!",
     "image": "Imagem",
     "partnerAdded": "Parceiro adicionado!! Agora é só aproveitar.",
-    "partnerRemoved": "Parceiro removido!!"
+    "partnerRemoved": "Parceiro removido!!",
+    "noProducts": "Não há produtos no carrinho!",
+    "items": "Itens",
+    "total": "Total",
+    "finalize": "Finalizar",
+    "added": "adicionado!",
+    "removed": "removido!",
+    "errorRemovingPartner": "Erro ao remover parceiro! Tente novamente mais tarde.",
+    "errorConnectingPartner": "Erro ao conectar ao parceiro! Tente novamente mais tarde."
 }

@@ -2,13 +2,15 @@ import 'package:appinio_swiper/appinio_swiper.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:match_app/constants/function_constants.dart';
+import 'package:match_app/constants/value_constants.dart';
 import 'package:match_app/constants/widget_constants.dart';
 import 'package:match_app/models/couple.dart';
 import 'package:match_app/models/restaurant.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class RestaurantMatchController {
+class RestaurantMatchController extends GetxController {
   RestaurantMatchController({required this.context, required this.foodTypeId});
   BuildContext context;
   WidgetConstants widgets = WidgetConstants();
@@ -20,8 +22,8 @@ class RestaurantMatchController {
   Future<List<Restaurant>> getList() async {
     await getUser();
     DatabaseEvent restaurantEvent = await FirebaseDatabase.instance
-        .ref("restaurant")
-        .orderByChild("foodTypeId")
+        .ref(ValueConstants.restaurant)
+        .orderByChild(ValueConstants.foodTypeId)
         .equalTo(foodTypeId)
         .once();
 
@@ -38,8 +40,8 @@ class RestaurantMatchController {
     await getUser();
 
     DatabaseEvent restaurantEvent = await FirebaseDatabase.instance
-        .ref('menu')
-        .orderByChild('restaurant')
+        .ref(ValueConstants.menu)
+        .orderByChild(ValueConstants.restaurant)
         .equalTo(restaurantName)
         .once();
 
@@ -51,18 +53,19 @@ class RestaurantMatchController {
 
   getUser() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
-    String? id = preferences.getString("coupleId");
+    String? id = preferences.getString(ValueConstants.coupleId);
     if (id != null) {
       coupleId = id;
-      DatabaseEvent coupleEvent =
-          await FirebaseDatabase.instance.ref('couples/$coupleId').once();
+      DatabaseEvent coupleEvent = await FirebaseDatabase.instance
+          .ref('${ValueConstants.couples}/$coupleId')
+          .once();
       Couple couple = Couple.fromJson(
           Map<String, dynamic>.from(coupleEvent.snapshot.value as Map),
           coupleEvent.snapshot.key!);
       if (couple.firstId == FirebaseAuth.instance.currentUser!.uid) {
-        voteId = "firstVote";
+        voteId = ValueConstants.firstVote;
       } else {
-        voteId = "secondVote";
+        voteId = ValueConstants.secondVote;
       }
     } else {
       openNoPartnerDialog();
@@ -71,15 +74,15 @@ class RestaurantMatchController {
 
   vote(Restaurant restaurant, SwiperActivity activity, bool last) async {
     await FirebaseDatabase.instance
-        .ref('restaurant/${restaurant.id}')
+        .ref('${ValueConstants.restaurant}/${restaurant.id}')
         .update({voteId: activity.direction == AxisDirection.right ? 1 : -1});
     await verifyMatches(last);
   }
 
   verifyMatches(bool last) async {
     DatabaseEvent restaurantEvent = await FirebaseDatabase.instance
-        .ref('restaurant')
-        .orderByChild('foodTypeId')
+        .ref(ValueConstants.restaurant)
+        .orderByChild(ValueConstants.foodTypeId)
         .equalTo(foodTypeId)
         .once();
 

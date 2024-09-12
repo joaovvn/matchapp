@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 import 'package:match_app/constants/function_constants.dart';
+import 'package:match_app/constants/value_constants.dart';
 import 'package:match_app/constants/widget_constants.dart';
 import 'package:match_app/models/couple.dart';
 import 'package:qr_code_dart_scan/qr_code_dart_scan.dart';
@@ -24,8 +25,8 @@ class HomeController extends GetxController {
     preferences = await SharedPreferences.getInstance();
     if (coupleId.isEmpty) {
       await FirebaseDatabase.instance
-          .ref('couples')
-          .orderByChild('firstId')
+          .ref(ValueConstants.couples)
+          .orderByChild(ValueConstants.firstId)
           .equalTo(FirebaseAuth.instance.currentUser?.uid)
           .once()
           .then((DatabaseEvent event) {
@@ -35,8 +36,8 @@ class HomeController extends GetxController {
       });
       if (key == null) {
         FirebaseDatabase.instance
-            .ref('couples')
-            .orderByChild('secondId')
+            .ref(ValueConstants.couples)
+            .orderByChild(ValueConstants.secondId)
             .equalTo(FirebaseAuth.instance.currentUser?.uid)
             .once()
             .then((DatabaseEvent event) {
@@ -46,13 +47,15 @@ class HomeController extends GetxController {
         });
       }
     } else {
-      key = FirebaseDatabase.instance.ref('couples/${coupleId.value}').key;
+      key = FirebaseDatabase.instance
+          .ref('${ValueConstants.couples}/${coupleId.value}')
+          .key;
     }
     if (key == null) {
-      preferences.remove("coupleId");
+      preferences.remove(ValueConstants.coupleId);
       coupleId.value = "";
     } else {
-      preferences.setString("coupleId", key!);
+      preferences.setString(ValueConstants.coupleId, key!);
       coupleId.value = key!;
       FunctionConstants.resetVotes();
       verifyRemovedPartner();
@@ -70,23 +73,34 @@ class HomeController extends GetxController {
 
   removePartner() async {
     FirebaseDatabase.instance
-        .ref('couples/${coupleId.value}')
+        .ref('${ValueConstants.couples}/${coupleId.value}')
         .remove()
         .then((_) {
-      preferences.remove("coupleId");
+      preferences.remove(ValueConstants.coupleId);
       coupleId.value = "";
     }).catchError((_) {
-      //TODO: tratar erro
+      showWarning(ValueConstants.removePartnerError);
     });
+  }
+
+  showWarning(int type) {
+    String content = "";
+    if (type == ValueConstants.removePartnerError) {
+      content = AppLocalizations.of(context)!.errorRemovingPartner;
+    }
+    if (type == ValueConstants.connectPartnerError) {
+      content = AppLocalizations.of(context)!.errorConnectingPartner;
+    }
+    widgets.showWarning(context, content);
   }
 
   verifyRemovedPartner() async {
     FirebaseDatabase.instance
-        .ref('couples/${coupleId.value}')
+        .ref('${ValueConstants.couples}/${coupleId.value}')
         .onValue
         .listen((DatabaseEvent event) {
       if (!event.snapshot.exists) {
-        preferences.remove("coupleId");
+        preferences.remove(ValueConstants.coupleId);
         coupleId.value = "";
         showRemovedPartner();
       }
@@ -203,14 +217,14 @@ class HomeController extends GetxController {
         firstId: FirebaseAuth.instance.currentUser!.uid,
         secondId: capture.text);
     DatabaseReference databaseReference =
-        FirebaseDatabase.instance.ref().child('couples').push();
+        FirebaseDatabase.instance.ref().child(ValueConstants.couples).push();
 
     await databaseReference.set(couple.toJson()).then((_) {
-      preferences.setString("coupleId", databaseReference.key!);
+      preferences.setString(ValueConstants.coupleId, databaseReference.key!);
       coupleId.value = databaseReference.key!;
       onPartnerAdded();
     }).catchError((e) {
-      //TODO: tratar erro.
+      showWarning(ValueConstants.connectPartnerError);
     });
   }
 
@@ -219,15 +233,16 @@ class HomeController extends GetxController {
     showAddedPartner();
   }
 
-  verifyAddedPartner() async {
+  verifyAddedPartner() {
     FirebaseDatabase.instance
-        .ref('couples')
-        .orderByChild('secondId')
+        .ref(ValueConstants.couples)
+        .orderByChild(ValueConstants.secondId)
         .equalTo(FirebaseAuth.instance.currentUser!.uid)
         .onValue
         .listen((DatabaseEvent event) {
       if (event.snapshot.exists) {
-        preferences.setString("coupleId", event.snapshot.children.first.key!);
+        preferences.setString(
+            ValueConstants.coupleId, event.snapshot.children.first.key!);
         coupleId.value = event.snapshot.children.first.key!;
         onPartnerAdded();
       }

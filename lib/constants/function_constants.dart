@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:match_app/constants/value_constants.dart';
 import 'package:match_app/models/couple.dart';
 import 'package:match_app/models/food_type.dart';
 import 'package:match_app/models/restaurant.dart';
@@ -8,27 +9,27 @@ import 'package:shared_preferences/shared_preferences.dart';
 class FunctionConstants {
   static resetVotes() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
-    String? coupleId = preferences.getString("coupleId");
+    String? coupleId = preferences.getString(ValueConstants.coupleId);
     if (coupleId == null) {
       return;
     }
     String voteId = "";
     FirebaseDatabase.instance
-        .ref("couples/$coupleId")
+        .ref("${ValueConstants.couples}/$coupleId")
         .once()
         .then((DatabaseEvent event) {
       Couple couple = Couple.fromJson(
           Map<String, dynamic>.from(event.snapshot.value as Map), coupleId);
       if (couple.firstId == FirebaseAuth.instance.currentUser!.uid) {
-        voteId = "firstVote";
+        voteId = ValueConstants.firstVote;
       } else {
-        voteId = "secondVote";
+        voteId = ValueConstants.secondVote;
       }
     });
 
     DatabaseEvent foodEvent = await FirebaseDatabase.instance
-        .ref("foodType")
-        .orderByChild("coupleId")
+        .ref(ValueConstants.foodType)
+        .orderByChild(ValueConstants.coupleId)
         .equalTo(coupleId)
         .once();
 
@@ -39,12 +40,12 @@ class FunctionConstants {
 
     for (FoodType foodType in listFoodTypes) {
       await FirebaseDatabase.instance
-          .ref('foodType/${foodType.id}')
+          .ref('${ValueConstants.foodType}/${foodType.id}')
           .update({voteId: 0});
 
       DatabaseEvent restaurantEvent = await FirebaseDatabase.instance
-          .ref('restaurant')
-          .orderByChild('foodTypeId')
+          .ref(ValueConstants.restaurant)
+          .orderByChild(ValueConstants.foodTypeId)
           .equalTo(foodType.id)
           .once();
 
@@ -54,7 +55,7 @@ class FunctionConstants {
           .toList();
       for (Restaurant restaurant in listRestaurants) {
         await FirebaseDatabase.instance
-            .ref('restaurant/${restaurant.id}')
+            .ref('${ValueConstants.restaurant}/${restaurant.id}')
             .update({voteId: 0});
       }
     }
