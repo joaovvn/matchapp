@@ -6,7 +6,8 @@ import 'package:get/get.dart';
 import 'package:match_app/constants/function_constants.dart';
 import 'package:match_app/constants/value_constants.dart';
 import 'package:match_app/constants/widget_constants.dart';
-import 'package:match_app/models/couple.dart';
+import 'package:match_app/models/group.dart';
+import 'package:match_app/models/member.dart';
 import 'package:qr_code_dart_scan/qr_code_dart_scan.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -17,7 +18,7 @@ class HomeController extends GetxController {
   BuildContext context;
   late SharedPreferences preferences;
   WidgetConstants widgets = WidgetConstants();
-  RxString coupleId = "".obs;
+  RxString groupId = "".obs;
   RxBool isEnglish = (Get.locale == const Locale("en")).obs;
 
   init() async {
@@ -31,10 +32,10 @@ class HomeController extends GetxController {
       isEnglish.value = true;
     }
     Get.updateLocale(Locale(language));
-    if (coupleId.isEmpty) {
+    if (groupId.isEmpty) {
       await FirebaseDatabase.instance
-          .ref(ValueConstants.couples)
-          .orderByChild(ValueConstants.firstId)
+          .ref(ValueConstants.groupMembers)
+          .orderByChild(ValueConstants.userId)
           .equalTo(FirebaseAuth.instance.currentUser?.uid)
           .once()
           .then((DatabaseEvent event) {
@@ -42,80 +43,68 @@ class HomeController extends GetxController {
           key = event.snapshot.children.first.key;
         }
       });
-      if (key == null) {
-        await FirebaseDatabase.instance
-            .ref(ValueConstants.couples)
-            .orderByChild(ValueConstants.secondId)
-            .equalTo(FirebaseAuth.instance.currentUser?.uid)
-            .once()
-            .then((DatabaseEvent event) {
-          if (event.snapshot.exists) {
-            key = event.snapshot.children.first.key;
-          }
-        });
-      }
     } else {
       key = FirebaseDatabase.instance
-          .ref('${ValueConstants.couples}/${coupleId.value}')
+          .ref('${ValueConstants.groups}/${groupId.value}')
           .key;
     }
     if (key == null) {
-      preferences.remove(ValueConstants.coupleId);
-      coupleId.value = "";
+      preferences.remove(ValueConstants.groupId);
+      groupId.value = "";
     } else {
-      preferences.setString(ValueConstants.coupleId, key!);
-      coupleId.value = key!;
+      preferences.setString(ValueConstants.groupId, key!);
+      groupId.value = key!;
       FunctionConstants.resetVotes();
-      verifyRemovedPartner();
+      verifyRemovedGroup();
     }
   }
 
-  showAddedPartner() {
-    widgets.addedPartner(context);
+  showAddedGroup() {
+    widgets.addedGroup(context);
   }
 
-  showRemovedPartner() {
-    widgets.removedPartner(context);
+  showRemovedGroup() {
+    widgets.removedGroup(context);
   }
 
-  removePartner() async {
+  removeGroup() async {
     FirebaseDatabase.instance
-        .ref('${ValueConstants.couples}/${coupleId.value}')
+        .ref('${ValueConstants.groups}/${groupId.value}')
         .remove()
         .then((_) {
-      preferences.remove(ValueConstants.coupleId);
-      coupleId.value = "";
+      preferences.remove(ValueConstants.groupId);
+      groupId.value = "";
     }).catchError((_) {
-      showWarning(ValueConstants.removePartnerError);
+      showWarning(ValueConstants.removeGroupError);
     });
   }
 
   showWarning(int type) {
     String content = "";
-    if (type == ValueConstants.removePartnerError) {
-      content = AppLocalizations.of(context)!.errorRemovingPartner;
+    if (type == ValueConstants.removeGroupError) {
+      content = AppLocalizations.of(context)!.errorRemovingGroup;
     }
-    if (type == ValueConstants.connectPartnerError) {
-      content = AppLocalizations.of(context)!.errorConnectingPartner;
+    if (type == ValueConstants.connectGroupError) {
+      content = AppLocalizations.of(context)!.errorConnectingGroup;
     }
     widgets.showWarning(context, content);
   }
 
-  verifyRemovedPartner() async {
+  verifyRemovedGroup() async {
     FirebaseDatabase.instance
-        .ref('${ValueConstants.couples}/${coupleId.value}')
+        .ref('${ValueConstants.groups}/${groupId.value}')
         .onValue
         .listen((DatabaseEvent event) {
       if (!event.snapshot.exists) {
-        preferences.remove(ValueConstants.coupleId);
-        coupleId.value = "";
-        showRemovedPartner();
+        preferences.remove(ValueConstants.groupId);
+        groupId.value = "";
+        showRemovedGroup();
       }
     });
   }
 
-  addPartner() {
-    verifyAddedPartner();
+  addGroup() {
+    verifyAddedGroup();
     showDialog(
         context: context,
         builder: (context) {
@@ -176,7 +165,7 @@ class HomeController extends GetxController {
                                 Expanded(
                                   flex: 6,
                                   child: Text(
-                                    AppLocalizations.of(context)!.readPartnerQR,
+                                    AppLocalizations.of(context)!.readGroupQR,
                                     style: const TextStyle(fontSize: 12),
                                   ),
                                 ),
@@ -219,39 +208,55 @@ class HomeController extends GetxController {
   }
 
   onQrFound(Result capture) async {
-    Couple couple = Couple(
-        id: "",
-        firstId: FirebaseAuth.instance.currentUser!.uid,
-        secondId: capture.text);
-    DatabaseReference databaseReference =
-        FirebaseDatabase.instance.ref().child(ValueConstants.couples).push();
-
-    await databaseReference.set(couple.toJson()).then((_) {
-      preferences.setString(ValueConstants.coupleId, databaseReference.key!);
-      coupleId.value = databaseReference.key!;
-      onPartnerAdded();
-    }).catchError((e) {
-      showWarning(ValueConstants.connectPartnerError);
-    });
+    Group group = Group(
+      id: "",
+      ownerId: FirebaseAuth.instance.currentUser!.uid,
+    );
+    if (await FirebaseDatabase.instance
+        .ref(ValueConstants.groups)
+        .orderByChild(ValueConstants.ownerId)
+        .equalTo(FirebaseAuth.instance.currentUser!.uid)
+        .once()
+        .then((value) {
+      return value.snapshot.children.isEmpty ? true : false;
+    })) {
+      DatabaseReference databaseReference =
+          FirebaseDatabase.instance.ref().child(ValueConstants.groups).push();
+      await databaseReference.set(group.toJson()).then((_) {
+        preferences.setString(ValueConstants.groupId, databaseReference.key!);
+        groupId.value = databaseReference.key!;
+        Member owner = Member(
+            groupId: groupId.value,
+            userId: FirebaseAuth.instance.currentUser!.uid);
+        Member member = Member(groupId: groupId.value, userId: capture.text);
+        FirebaseDatabase.instance.ref(ValueConstants.groupMembers).set(owner);
+        FirebaseDatabase.instance.ref(ValueConstants.groupMembers).set(member);
+        onGroupAdded();
+      }).catchError((e) {
+        showWarning(ValueConstants.connectGroupError);
+      });
+      return;
+    }
   }
 
-  onPartnerAdded() {
+  onGroupAdded() {
     Get.back();
-    showAddedPartner();
+    showAddedGroup();
   }
 
-  verifyAddedPartner() {
+  verifyAddedGroup() {
     FirebaseDatabase.instance
-        .ref(ValueConstants.couples)
-        .orderByChild(ValueConstants.secondId)
+        .ref(ValueConstants.groupMembers)
+        .orderByChild(ValueConstants.userId)
         .equalTo(FirebaseAuth.instance.currentUser!.uid)
         .onValue
         .listen((DatabaseEvent event) {
       if (event.snapshot.exists) {
-        preferences.setString(
-            ValueConstants.coupleId, event.snapshot.children.first.key!);
-        coupleId.value = event.snapshot.children.first.key!;
-        onPartnerAdded();
+        Member member = Member.fromJson(Map<String, dynamic>.from(
+            event.snapshot.children.first.value as Map));
+        preferences.setString(ValueConstants.groupId, member.groupId);
+        groupId.value = member.groupId;
+        onGroupAdded();
       }
     });
   }

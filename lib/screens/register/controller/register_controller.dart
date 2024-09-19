@@ -18,21 +18,21 @@ class RegisterController {
   String option = ValueConstants.foodType;
   String? foodType;
   Uint8List? image;
-  String? coupleId;
+  String? groupId;
   List<DropdownMenuItem> foodTypeItems =
       List<DropdownMenuItem>.empty(growable: true);
   WidgetConstants widgets = WidgetConstants();
 
   Future<bool> getFoodTypes() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
-    coupleId = preferences.getString(ValueConstants.coupleId);
-    if (coupleId == null) {
+    groupId = preferences.getString(ValueConstants.groupId);
+    if (groupId == null) {
       openNoPartnerDialog();
     } else {
       DatabaseEvent foodEvent = await FirebaseDatabase.instance
           .ref(ValueConstants.foodType)
-          .orderByChild(ValueConstants.coupleId)
-          .equalTo(coupleId)
+          .orderByChild(ValueConstants.groupId)
+          .equalTo(groupId)
           .once();
 
       List<FoodType> foodTypes = foodEvent.snapshot.children
@@ -60,7 +60,7 @@ class RegisterController {
   }
 
   openNoPartnerDialog() {
-    widgets.noPartnerDialog(context);
+    widgets.noGroupDialog(context);
   }
 
   pickImage() async {
@@ -95,14 +95,10 @@ class RegisterController {
                     id: "",
                     title: titleController.text,
                     image: image != null ? base64.encode(image!.toList()) : "",
-                    coupleId: coupleId!,
-                    firstVote: 0,
-                    secondVote: 0)
+                    groupId: groupId!)
                 .toJson()
             : Restaurant(
                     id: "",
-                    firstVote: 0,
-                    secondVote: 0,
                     title: titleController.text,
                     image: image != null ? base64.encode(image!.toList()) : "",
                     foodTypeId: foodType!)

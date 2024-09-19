@@ -5,25 +5,20 @@ class Restaurant {
   String foodTypeId;
   String title;
   String image;
-  int firstVote;
-  int secondVote;
 
   Restaurant(
       {required this.id,
       required this.title,
       required this.image,
-      required this.foodTypeId,
-      required this.firstVote,
-      required this.secondVote});
+      required this.foodTypeId});
 
   factory Restaurant.fromJson(Map<String, dynamic> json, String id) {
     return Restaurant(
-        id: id,
-        title: json[ValueConstants.title],
-        foodTypeId: json[ValueConstants.foodTypeId],
-        image: json[ValueConstants.image],
-        firstVote: json[ValueConstants.firstVote],
-        secondVote: json[ValueConstants.secondVote]);
+      id: id,
+      title: json[ValueConstants.title],
+      foodTypeId: json[ValueConstants.foodTypeId],
+      image: json[ValueConstants.image],
+    );
   }
 
   Map<String, dynamic> toJson() {
@@ -31,8 +26,6 @@ class Restaurant {
       ValueConstants.title: title,
       ValueConstants.image: image,
       ValueConstants.foodTypeId: foodTypeId,
-      ValueConstants.firstVote: firstVote,
-      ValueConstants.secondVote: secondVote
     };
   }
 }

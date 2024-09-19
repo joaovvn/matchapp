@@ -61,9 +61,9 @@ class _HomeScreenState extends State<HomeScreen> {
               const Gap(50),
               TextButton(
                   onPressed: () async {
-                    controller.coupleId.value.isEmpty
-                        ? controller.addPartner()
-                        : controller.removePartner();
+                    controller.groupId.value.isEmpty
+                        ? controller.addGroup()
+                        : controller.removeGroup();
                   },
                   style: ButtonStyle(
                     overlayColor: WidgetStateColor.resolveWith(
@@ -71,9 +71,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   child: Obx(() {
                     return Text(
-                      controller.coupleId.value.isEmpty
-                          ? AppLocalizations.of(context)!.addPartner
-                          : AppLocalizations.of(context)!.removePartner,
+                      controller.groupId.value.isEmpty
+                          ? AppLocalizations.of(context)!.addGroup
+                          : AppLocalizations.of(context)!.removeGroup,
                       style: const TextStyle(
                           fontSize: 12,
                           color: Colors.white,

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:appinio_swiper/appinio_swiper.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -6,20 +8,20 @@ import 'package:get/get.dart';
 import 'package:match_app/constants/function_constants.dart';
 import 'package:match_app/constants/value_constants.dart';
 import 'package:match_app/constants/widget_constants.dart';
-import 'package:match_app/models/couple.dart';
 import 'package:match_app/models/restaurant.dart';
+import 'package:match_app/models/vote.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class RestaurantMatchController extends GetxController {
   RestaurantMatchController({required this.context, required this.foodTypeId});
   BuildContext context;
   WidgetConstants widgets = WidgetConstants();
-  String voteId = "";
-  String coupleId = "";
+  late String groupId;
   String foodTypeId;
   bool match = false;
+  Rx<List<Restaurant>?> restaurantList = Rx<List<Restaurant>?>(null);
 
-  Future<List<Restaurant>> getList() async {
+  Future<void> getList() async {
     await getUser();
     DatabaseEvent restaurantEvent = await FirebaseDatabase.instance
         .ref(ValueConstants.restaurant)
@@ -30,7 +32,7 @@ class RestaurantMatchController extends GetxController {
     if (!restaurantEvent.snapshot.exists) {
       FunctionConstants.resetVotes();
     }
-    return restaurantEvent.snapshot.children
+    restaurantList.value = restaurantEvent.snapshot.children
         .map((child) => Restaurant.fromJson(
             Map<String, dynamic>.from(child.value as Map), child.key!))
         .toList();
@@ -53,73 +55,74 @@ class RestaurantMatchController extends GetxController {
 
   getUser() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
-    String? id = preferences.getString(ValueConstants.coupleId);
+    String? id = preferences.getString(ValueConstants.groupId);
     if (id != null) {
-      coupleId = id;
-      DatabaseEvent coupleEvent = await FirebaseDatabase.instance
-          .ref('${ValueConstants.couples}/$coupleId')
-          .once();
-      Couple couple = Couple.fromJson(
-          Map<String, dynamic>.from(coupleEvent.snapshot.value as Map),
-          coupleEvent.snapshot.key!);
-      if (couple.firstId == FirebaseAuth.instance.currentUser!.uid) {
-        voteId = ValueConstants.firstVote;
-      } else {
-        voteId = ValueConstants.secondVote;
-      }
+      groupId = id;
+      verifyMatches();
     } else {
-      openNoPartnerDialog();
+      openNoGroupDialog();
     }
   }
 
   vote(Restaurant restaurant, SwiperActivity activity, bool last) async {
-    await FirebaseDatabase.instance
-        .ref('${ValueConstants.restaurant}/${restaurant.id}')
-        .update({voteId: activity.direction == AxisDirection.right ? 1 : -1});
-    await verifyMatches(last);
+    DatabaseReference reference =
+        FirebaseDatabase.instance.ref(ValueConstants.votes);
+    reference.set(RestaurantVote(
+        restaurantId: restaurant.id,
+        groupId: groupId,
+        userId: FirebaseAuth.instance.currentUser!.uid,
+        vote: activity.direction == AxisDirection.right ? 1 : -1));
   }
 
-  verifyMatches(bool last) async {
-    DatabaseEvent restaurantEvent = await FirebaseDatabase.instance
-        .ref(ValueConstants.restaurant)
-        .orderByChild(ValueConstants.foodTypeId)
-        .equalTo(foodTypeId)
-        .once();
-
-    List<Restaurant> matches = restaurantEvent.snapshot.children
-        .map((child) => Restaurant.fromJson(
-            Map<String, dynamic>.from(child.value as Map), child.key!))
-        .toList();
-    if (matches.isNotEmpty &&
-        matches.any((element) =>
-            element.firstVote == element.secondVote &&
-            element.firstVote == 1)) {
-      Restaurant restaurant = matches.firstWhere((element) =>
-          element.firstVote == element.secondVote && element.firstVote == 1);
-      bool showMenu = await hasMenu(restaurant.title);
-      openMatchDialog(restaurant, showMenu);
-    } else if (last &&
-        matches.every((element) =>
-            ((element.firstVote == -1 && element.secondVote.isOdd) ||
-                (element.firstVote.isOdd && element.secondVote == -1)))) {
-      openNoMatchDialog();
-    } else {
-      verifyMatches(last);
+  verifyMatches() async {
+    DataSnapshot snapshot = await FirebaseDatabase.instance
+        .ref(ValueConstants.groupMembers)
+        .orderByChild(ValueConstants.groupId)
+        .get();
+    int groupSize = snapshot.children.length;
+    DatabaseReference reference =
+        FirebaseDatabase.instance.ref(ValueConstants.votes);
+    for (Restaurant restaurant in restaurantList.value!) {
+      reference
+          .orderByChild(ValueConstants.groupId)
+          .equalTo(groupId)
+          .orderByChild(ValueConstants.restaurantId)
+          .equalTo(restaurant.id)
+          .orderByChild(ValueConstants.vote)
+          .equalTo(1)
+          .onValue
+          .listen((DatabaseEvent event) {
+        if (event.snapshot.children.length == groupSize) {
+          openMatchDialog(restaurant);
+        }
+      });
     }
+    reference
+        .orderByChild(ValueConstants.groupId)
+        .equalTo(groupId)
+        .onValue
+        .listen((DatabaseEvent event) {
+      if (event.snapshot.children.length ==
+          groupSize * restaurantList.value!.length) {
+        openNoMatchDialog();
+      }
+    });
   }
 
-  openMatchDialog(Restaurant restaurant, bool showMenu) async {
+  openMatchDialog(Restaurant restaurant) async {
     if (!match) {
       match = true;
-      widgets.restaurantMatchDialog(context, restaurant, showMenu);
+      widgets.restaurantMatchDialog(context, restaurant, false);
     }
   }
 
   openNoMatchDialog() {
-    widgets.noMatchDialog(context);
+    if (!match) {
+      widgets.noMatchDialog(context);
+    }
   }
 
-  openNoPartnerDialog() {
-    widgets.noPartnerDialog(context);
+  openNoGroupDialog() {
+    widgets.noGroupDialog(context);
   }
 }

@@ -43,7 +43,7 @@ class _FoodTypeMatchScreenState extends State<FoodTypeMatchScreen> {
                   child: finished
                       ? Center(
                           child: Text(
-                            AppLocalizations.of(context)!.waitingPartnerVotes,
+                            AppLocalizations.of(context)!.waitingGroupVotes,
                             textAlign: TextAlign.center,
                             style: const TextStyle(
                                 fontWeight: FontWeight.bold,

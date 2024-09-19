@@ -319,7 +319,7 @@ class WidgetConstants {
             ));
   }
 
-  noPartnerDialog(BuildContext context) {
+  noGroupDialog(BuildContext context) {
     Size screenSize = MediaQuery.of(context).size;
     showDialog(
         context: context,
@@ -340,7 +340,7 @@ class WidgetConstants {
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Text(
-                          AppLocalizations.of(context)!.partnerNotAdded,
+                          AppLocalizations.of(context)!.groupNotAdded,
                           textAlign: TextAlign.center,
                           style: const TextStyle(
                               color: Colors.deepPurple,
@@ -521,7 +521,7 @@ class WidgetConstants {
     );
   }
 
-  addedPartner(BuildContext context) {
+  addedGroup(BuildContext context) {
     Size screenSize = MediaQuery.of(context).size;
     showDialog(
         context: context,
@@ -543,7 +543,7 @@ class WidgetConstants {
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Text(
-                          AppLocalizations.of(context)!.partnerAdded,
+                          AppLocalizations.of(context)!.groupAdded,
                           textAlign: TextAlign.center,
                           style: const TextStyle(
                               color: Colors.deepPurple,
@@ -572,7 +572,7 @@ class WidgetConstants {
             )));
   }
 
-  removedPartner(BuildContext context) {
+  removedGroup(BuildContext context) {
     Size screenSize = MediaQuery.of(context).size;
     showDialog(
         context: context,
@@ -594,7 +594,7 @@ class WidgetConstants {
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Text(
-                          AppLocalizations.of(context)!.partnerRemoved,
+                          AppLocalizations.of(context)!.groupRemoved,
                           textAlign: TextAlign.center,
                           style: const TextStyle(
                               color: Colors.deepPurple,
