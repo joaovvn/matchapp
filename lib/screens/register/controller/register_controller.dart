@@ -3,12 +3,13 @@ import 'dart:convert';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:match_app/constants/colors_constants.dart';
 import 'package:match_app/constants/value_constants.dart';
 import 'package:match_app/constants/widget_constants.dart';
 import 'package:match_app/models/food_type.dart';
 import 'package:match_app/models/restaurant.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class RegisterController {
@@ -19,13 +20,12 @@ class RegisterController {
   String? foodType;
   Uint8List? image;
   String? groupId;
+  GetStorage storage = GetStorage();
   List<DropdownMenuItem> foodTypeItems =
       List<DropdownMenuItem>.empty(growable: true);
-  WidgetConstants widgets = WidgetConstants();
 
   Future<bool> getFoodTypes() async {
-    SharedPreferences preferences = await SharedPreferences.getInstance();
-    groupId = preferences.getString(ValueConstants.groupId);
+    groupId = storage.read(ValueConstants.groupId);
     if (groupId == null) {
       openNoPartnerDialog();
     } else {
@@ -51,7 +51,7 @@ class RegisterController {
           value: foodType.id,
           child: Text(
             foodType.title,
-            style: const TextStyle(color: Colors.deepPurple),
+            style: const TextStyle(color: ColorsConstants.main),
           ),
         ));
       }
@@ -60,7 +60,7 @@ class RegisterController {
   }
 
   openNoPartnerDialog() {
-    widgets.noGroupDialog(context);
+    WidgetConstants.noGroupDialog(context);
   }
 
   pickImage() async {
@@ -83,7 +83,7 @@ class RegisterController {
           textAlign: TextAlign.center,
           style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
         ),
-        backgroundColor: Colors.deepPurple,
+        backgroundColor: ColorsConstants.main,
         duration: const Duration(seconds: 1),
       ));
       return;
@@ -110,6 +110,6 @@ class RegisterController {
   }
 
   showRegisterDialog() {
-    widgets.registerDialog(context);
+    WidgetConstants.registerDialog(context);
   }
 }

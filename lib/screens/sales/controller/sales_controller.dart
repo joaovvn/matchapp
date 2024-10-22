@@ -9,7 +9,6 @@ import 'package:match_app/models/restaurant.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class SalesController extends GetxController {
-  WidgetConstants widgets = WidgetConstants();
   late BuildContext _context;
   late Restaurant restaurant;
   RxList<MenuItem> menu = <MenuItem>[].obs;
@@ -58,14 +57,14 @@ class SalesController extends GetxController {
       item.quantity = quantity.value;
       shoppingCart.add(item);
     }
-    widgets.showWarning(
+    WidgetConstants.showWarning(
         _context, "${item.itemName} ${AppLocalizations.of(context)!.added}");
   }
 
   removeItemFromCart(int index, BuildContext context) {
     String itemName = shoppingCart[index].itemName;
     shoppingCart.removeAt(index);
-    widgets.showWarning(
+    WidgetConstants.showWarning(
         _context, "$itemName ${AppLocalizations.of(context)!.removed}");
   }
 }

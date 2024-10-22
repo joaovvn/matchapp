@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:appinio_swiper/appinio_swiper.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:match_app/constants/colors_constants.dart';
 import 'package:match_app/constants/function_constants.dart';
 import 'package:match_app/constants/widget_constants.dart';
 import 'package:match_app/screens/match/controller/restaurant_match_controller.dart';
@@ -18,7 +19,6 @@ class RestaurantMatchScreen extends StatefulWidget {
 }
 
 class _RestaurantMatchScreenState extends State<RestaurantMatchScreen> {
-  WidgetConstants widgets = WidgetConstants();
   bool finished = false;
   AppinioSwiperController swiperController = AppinioSwiperController();
   @override
@@ -32,7 +32,7 @@ class _RestaurantMatchScreenState extends State<RestaurantMatchScreen> {
     RestaurantMatchController controller = RestaurantMatchController(
         context: context, foodTypeId: widget.foodTypeId);
     return Scaffold(
-      appBar: widgets.appBar(false, context,
+      appBar: WidgetConstants.appBar(false, context,
           onPressed: FunctionConstants.resetVotes),
       body: Obx(() {
         if (controller.restaurantList.value != null &&
@@ -51,7 +51,7 @@ class _RestaurantMatchScreenState extends State<RestaurantMatchScreen> {
                             style: const TextStyle(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 25,
-                                color: Colors.deepPurple),
+                                color: ColorsConstants.main),
                           ),
                         )
                       : AppinioSwiper(
@@ -75,7 +75,7 @@ class _RestaurantMatchScreenState extends State<RestaurantMatchScreen> {
                             return Container(
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(20),
-                                color: Colors.deepPurple,
+                                color: ColorsConstants.main,
                               ),
                               alignment: Alignment.center,
                               child: Column(
@@ -130,7 +130,7 @@ class _RestaurantMatchScreenState extends State<RestaurantMatchScreen> {
                                       WidgetStatePropertyAll(Colors.red)),
                               icon: const Icon(
                                 Icons.close,
-                                color: Colors.white,
+                                color: ColorsConstants.contrast,
                               )),
                           IconButton(
                               iconSize: 50,
@@ -140,7 +140,7 @@ class _RestaurantMatchScreenState extends State<RestaurantMatchScreen> {
                                       WidgetStatePropertyAll(Colors.green)),
                               icon: const Icon(
                                 Icons.check,
-                                color: Colors.white,
+                                color: ColorsConstants.contrast,
                               ))
                         ],
                       ),
@@ -151,7 +151,7 @@ class _RestaurantMatchScreenState extends State<RestaurantMatchScreen> {
         return controller.restaurantList.value == null
             ? const Center(
                 child: CircularProgressIndicator(
-                  color: Colors.deepPurple,
+                  color: ColorsConstants.main,
                 ),
               )
             : Center(
@@ -163,7 +163,7 @@ class _RestaurantMatchScreenState extends State<RestaurantMatchScreen> {
                     style: const TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 25,
-                        color: Colors.deepPurple),
+                        color: ColorsConstants.main),
                   ),
                 ),
               );

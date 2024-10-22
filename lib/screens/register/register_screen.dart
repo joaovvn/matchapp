@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:match_app/constants/colors_constants.dart';
 import 'package:match_app/constants/value_constants.dart';
 import 'package:match_app/constants/widget_constants.dart';
 import 'package:match_app/screens/register/controller/register_controller.dart';
@@ -12,7 +13,6 @@ class RegisterScreen extends StatefulWidget {
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
-  WidgetConstants widgets = WidgetConstants();
   late RegisterController controller;
 
   @override
@@ -26,7 +26,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         resizeToAvoidBottomInset: false,
-        appBar: widgets.appBar(false, context),
+        appBar: WidgetConstants.appBar(false, context),
         body: FutureBuilder<bool>(
             future: controller.getFoodTypes(),
             builder: (context, snapshot) {
@@ -36,7 +36,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 right: false,
                 child: Column(
                   children: [
-                    widgets.dropdown(
+                    WidgetConstants.dropdown(
                         snapshot.data == true &&
                                 controller.foodTypeItems.isNotEmpty
                             ? [
@@ -45,7 +45,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   child: Text(
                                     AppLocalizations.of(context)!.foodType,
                                     style: const TextStyle(
-                                        color: Colors.deepPurple),
+                                        color: ColorsConstants.main),
                                   ),
                                 ),
                                 DropdownMenuItem(
@@ -53,7 +53,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   child: Text(
                                     AppLocalizations.of(context)!.restaurant,
                                     style: const TextStyle(
-                                        color: Colors.deepPurple),
+                                        color: ColorsConstants.main),
                                   ),
                                 )
                               ]
@@ -63,7 +63,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   child: Text(
                                     AppLocalizations.of(context)!.foodType,
                                     style: const TextStyle(
-                                        color: Colors.deepPurple),
+                                        color: ColorsConstants.main),
                                   ),
                                 ),
                               ],
@@ -73,25 +73,25 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             }),
                         controller.option),
                     controller.option == ValueConstants.restaurant
-                        ? widgets.dropdown(controller.foodTypeItems,
+                        ? WidgetConstants.dropdown(controller.foodTypeItems,
                             AppLocalizations.of(context)!.culinary, (option) {
                             controller.foodType = option;
                           }, controller.foodType)
                         : Container(),
-                    widgets.textField(controller.titleController,
-                        AppLocalizations.of(context)!.title),
-                    widgets.imagePicker(controller.image, () async {
+                    WidgetConstants.textField(controller.titleController,
+                        AppLocalizations.of(context)!.title, context, 0.8),
+                    WidgetConstants.imagePicker(controller.image, () async {
                       await controller.pickImage();
                       setState(() {});
                     }, context),
-                    widgets.button(
-                        Colors.deepPurple,
+                    WidgetConstants.button(
+                        ColorsConstants.main,
                         0.85,
                         () => controller.register(),
                         Text(AppLocalizations.of(context)!.register,
                             style: const TextStyle(
                                 fontSize: 10,
-                                color: Colors.white,
+                                color: ColorsConstants.contrast,
                                 fontWeight: FontWeight.bold)),
                         context)
                   ],

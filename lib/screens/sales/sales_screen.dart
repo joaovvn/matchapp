@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
+import 'package:match_app/constants/colors_constants.dart';
 import 'package:match_app/constants/function_constants.dart';
 import 'package:match_app/constants/widget_constants.dart';
 import 'package:match_app/models/menu_item.dart';
@@ -20,14 +21,12 @@ class SalesScreen extends StatefulWidget {
 }
 
 class _SalesScreenState extends State<SalesScreen> {
-  WidgetConstants widgets = WidgetConstants();
-
   @override
   Widget build(BuildContext context) {
     SalesController controller = Get.put(SalesController());
     controller.init(restaurant: widget.restaurant, context: context);
     return Scaffold(
-        appBar: widgets.appBar(false, context, onPressed: () {
+        appBar: WidgetConstants.appBar(false, context, onPressed: () {
           FunctionConstants.resetVotes;
         }),
         floatingActionButton:
@@ -51,7 +50,7 @@ class _SalesScreenState extends State<SalesScreen> {
                     separatorBuilder: (context, index) {
                       return const Divider(
                         thickness: 1,
-                        color: Colors.deepPurple,
+                        color: ColorsConstants.main,
                       );
                     },
                     itemCount: menu.length,
@@ -68,7 +67,7 @@ class _SalesScreenState extends State<SalesScreen> {
                                 Text(
                                   menu[index].itemName,
                                   style: const TextStyle(
-                                      color: Colors.deepPurple,
+                                      color: ColorsConstants.main,
                                       fontSize: 20,
                                       fontWeight: FontWeight.bold),
                                 ),
@@ -76,7 +75,7 @@ class _SalesScreenState extends State<SalesScreen> {
                                 Text(
                                   menu[index].description,
                                   style: const TextStyle(
-                                      color: Colors.deepPurple,
+                                      color: ColorsConstants.main,
                                       fontSize: 10,
                                       fontWeight: FontWeight.bold),
                                 ),
@@ -84,7 +83,7 @@ class _SalesScreenState extends State<SalesScreen> {
                                 Text(
                                   "R\$ ${menu[index].price.toStringAsFixed(2)}",
                                   style: const TextStyle(
-                                      color: Colors.deepPurple,
+                                      color: ColorsConstants.main,
                                       fontSize: 15,
                                       fontWeight: FontWeight.bold),
                                 ),
@@ -104,7 +103,7 @@ class _SalesScreenState extends State<SalesScreen> {
                                     },
                                     icon: const Icon(
                                       Icons.add_shopping_cart,
-                                      color: Colors.deepPurple,
+                                      color: ColorsConstants.main,
                                     )),
                               ],
                             ),
@@ -125,10 +124,10 @@ class _SalesScreenState extends State<SalesScreen> {
         bottomSheetShoppingCart(context, controller);
       },
       shape: const CircleBorder(),
-      backgroundColor: Colors.deepPurple,
+      backgroundColor: ColorsConstants.main,
       child: const Icon(
         Icons.shopping_cart_checkout_outlined,
-        color: Colors.white,
+        color: ColorsConstants.contrast,
       ),
     );
   }
@@ -160,7 +159,7 @@ class _SalesScreenState extends State<SalesScreen> {
                               style: const TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 25,
-                                  color: Colors.deepPurple),
+                                  color: ColorsConstants.main),
                             ),
                           ),
                         )
@@ -174,7 +173,7 @@ class _SalesScreenState extends State<SalesScreen> {
                                   separatorBuilder: (_, index) {
                                     return const Divider(
                                       thickness: 1,
-                                      color: Colors.deepPurple,
+                                      color: ColorsConstants.main,
                                     );
                                   },
                                   itemBuilder: (_, index) {
@@ -190,7 +189,7 @@ class _SalesScreenState extends State<SalesScreen> {
                                                 controller.shoppingCart[index]
                                                     .itemName,
                                                 style: const TextStyle(
-                                                    color: Colors.deepPurple,
+                                                    color: ColorsConstants.main,
                                                     fontSize: 20,
                                                     fontWeight:
                                                         FontWeight.bold),
@@ -200,7 +199,7 @@ class _SalesScreenState extends State<SalesScreen> {
                                                 controller.shoppingCart[index]
                                                     .description,
                                                 style: const TextStyle(
-                                                    color: Colors.deepPurple,
+                                                    color: ColorsConstants.main,
                                                     fontSize: 10,
                                                     fontWeight:
                                                         FontWeight.bold),
@@ -209,7 +208,7 @@ class _SalesScreenState extends State<SalesScreen> {
                                               Text(
                                                 "R\$ ${controller.shoppingCart[index].price.toStringAsFixed(2)}",
                                                 style: const TextStyle(
-                                                    color: Colors.deepPurple,
+                                                    color: ColorsConstants.main,
                                                     fontSize: 15,
                                                     fontWeight:
                                                         FontWeight.bold),
@@ -223,7 +222,7 @@ class _SalesScreenState extends State<SalesScreen> {
                                               Text(
                                                 "${controller.shoppingCart[index].quantity} un.",
                                                 style: const TextStyle(
-                                                    color: Colors.deepPurple,
+                                                    color: ColorsConstants.main,
                                                     fontSize: 15,
                                                     fontWeight:
                                                         FontWeight.bold),
@@ -237,7 +236,7 @@ class _SalesScreenState extends State<SalesScreen> {
                                                   icon: const Icon(
                                                     Icons
                                                         .remove_shopping_cart_outlined,
-                                                    color: Colors.deepPurple,
+                                                    color: ColorsConstants.main,
                                                   )),
                                             ],
                                           ),
@@ -248,7 +247,7 @@ class _SalesScreenState extends State<SalesScreen> {
                             ),
                             const Divider(
                               thickness: 2,
-                              color: Colors.deepPurple,
+                              color: ColorsConstants.main,
                             ),
                             Expanded(
                               flex: 2,
@@ -261,14 +260,14 @@ class _SalesScreenState extends State<SalesScreen> {
                                       Text(
                                         AppLocalizations.of(context)!.items,
                                         style: const TextStyle(
-                                            color: Colors.deepPurple,
+                                            color: ColorsConstants.main,
                                             fontSize: 14,
                                             fontWeight: FontWeight.bold),
                                       ),
                                       Text(
                                         "${controller.getTotalItems()} un.",
                                         style: const TextStyle(
-                                            color: Colors.deepPurple,
+                                            color: ColorsConstants.main,
                                             fontSize: 16,
                                             fontWeight: FontWeight.bold),
                                       )
@@ -281,28 +280,28 @@ class _SalesScreenState extends State<SalesScreen> {
                                       const Text(
                                         "Total",
                                         style: TextStyle(
-                                            color: Colors.deepPurple,
+                                            color: ColorsConstants.main,
                                             fontSize: 18,
                                             fontWeight: FontWeight.bold),
                                       ),
                                       Text(
                                         "R\$ ${controller.getTotalPrice()}",
                                         style: const TextStyle(
-                                            color: Colors.deepPurple,
+                                            color: ColorsConstants.main,
                                             fontSize: 20,
                                             fontWeight: FontWeight.bold),
                                       )
                                     ],
                                   ),
                                   const Gap(5),
-                                  widgets.button(
-                                      Colors.deepPurple,
+                                  WidgetConstants.button(
+                                      ColorsConstants.main,
                                       0.3,
                                       () {},
                                       Text(
                                         AppLocalizations.of(context)!.finalize,
                                         style: const TextStyle(
-                                            color: Colors.white,
+                                            color: ColorsConstants.contrast,
                                             fontSize: 15,
                                             fontWeight: FontWeight.bold),
                                       ),
@@ -326,7 +325,8 @@ class _SalesScreenState extends State<SalesScreen> {
         _decrementButton(value),
         Obx(() => Text(
               value.toString(),
-              style: const TextStyle(fontSize: 14.0, color: Colors.deepPurple),
+              style:
+                  const TextStyle(fontSize: 14.0, color: ColorsConstants.main),
             )),
         _incrementButton(value),
       ],
@@ -335,11 +335,11 @@ class _SalesScreenState extends State<SalesScreen> {
 
   Widget _incrementButton(RxInt value) {
     return IconButton(
-      color: Colors.white,
+      color: ColorsConstants.contrast,
       onPressed: () {
         value++;
       },
-      icon: const Icon(Icons.add, color: Colors.deepPurple),
+      icon: const Icon(Icons.add, color: ColorsConstants.main),
     );
   }
 
@@ -348,7 +348,7 @@ class _SalesScreenState extends State<SalesScreen> {
         onPressed: () {
           value = value--;
         },
-        color: Colors.white,
-        icon: const Icon(Icons.remove, color: Colors.deepPurple));
+        color: ColorsConstants.contrast,
+        icon: const Icon(Icons.remove, color: ColorsConstants.main));
   }
 }

@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "195149743395",
+    "firebase_url": "https://matchapp-b63fa-default-rtdb.firebaseio.com",
+    "project_id": "matchapp-b63fa",
+    "storage_bucket": "matchapp-b63fa.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:195149743395:android:9e66359b76762250c1f896",
+        "android_client_info": {
+          "package_name": "com.joaovvn.matchapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "195149743395-edvh9hmsr84c0gl3j7ff3vtl122jsb5v.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.joaovvn.matchapp",
+            "certificate_hash": "b461f9c0ba3398378c7c0059a55999467cfac2b2"
+          }
+        },
+        {
+          "client_id": "195149743395-iqspuuk2pou83hoiab627qs76icgcp0r.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDqw69aBPm_7K41k6Gqb_kGBJs2s49G3DI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "195149743395-84h0tg0fdhrc5jp6a6ufmi38l4597vg9.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "195149743395-fo9puk5hcq1vkljcctf5l6dnkbbqhrr7.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.joaovvn.matchApp"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

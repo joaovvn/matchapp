@@ -3,6 +3,8 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
+import 'package:match_app/constants/colors_constants.dart';
 import 'package:match_app/constants/function_constants.dart';
 import 'package:match_app/constants/value_constants.dart';
 import 'package:match_app/constants/widget_constants.dart';
@@ -10,23 +12,20 @@ import 'package:match_app/models/group.dart';
 import 'package:match_app/models/member.dart';
 import 'package:qr_code_dart_scan/qr_code_dart_scan.dart';
 import 'package:qr_flutter/qr_flutter.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class HomeController extends GetxController {
   HomeController({required this.context});
   BuildContext context;
-  late SharedPreferences preferences;
-  WidgetConstants widgets = WidgetConstants();
+  GetStorage storage = GetStorage();
   RxString groupId = "".obs;
   RxBool isEnglish = (Get.locale == const Locale("en")).obs;
 
   init() async {
     String? key;
-    preferences = await SharedPreferences.getInstance();
-    String? language = preferences.getString('locale');
+    String? language = storage.read('locale');
     if (language == null) {
-      preferences.setString('locale', 'en');
+      storage.write('locale', 'en');
       language = 'en';
     } else if (language == 'en') {
       isEnglish.value = true;
@@ -49,10 +48,10 @@ class HomeController extends GetxController {
           .key;
     }
     if (key == null) {
-      preferences.remove(ValueConstants.groupId);
+      storage.remove(ValueConstants.groupId);
       groupId.value = "";
     } else {
-      preferences.setString(ValueConstants.groupId, key!);
+      storage.write(ValueConstants.groupId, key!);
       groupId.value = key!;
       FunctionConstants.resetVotes();
       verifyRemovedGroup();
@@ -60,19 +59,30 @@ class HomeController extends GetxController {
   }
 
   showAddedGroup() {
-    widgets.addedGroup(context);
+    WidgetConstants.addedGroup(context);
   }
 
   showRemovedGroup() {
-    widgets.removedGroup(context);
+    WidgetConstants.removedGroup(context);
   }
 
   removeGroup() async {
     FirebaseDatabase.instance
-        .ref('${ValueConstants.groups}/${groupId.value}')
-        .remove()
-        .then((_) {
-      preferences.remove(ValueConstants.groupId);
+        .ref(ValueConstants.groups)
+        .orderByChild(ValueConstants.groupId)
+        .equalTo(groupId)
+        .once()
+        .then((DatabaseEvent event) {
+      event.snapshot.ref.remove();
+      storage.remove(ValueConstants.groupId);
+      FirebaseDatabase.instance
+          .ref(ValueConstants.groupMembers)
+          .orderByChild(ValueConstants.groupId)
+          .equalTo(groupId)
+          .once()
+          .then((DatabaseEvent event) {
+        event.snapshot.ref.remove();
+      });
       groupId.value = "";
     }).catchError((_) {
       showWarning(ValueConstants.removeGroupError);
@@ -87,7 +97,7 @@ class HomeController extends GetxController {
     if (type == ValueConstants.connectGroupError) {
       content = AppLocalizations.of(context)!.errorConnectingGroup;
     }
-    widgets.showWarning(context, content);
+    WidgetConstants.showWarning(context, content);
   }
 
   verifyRemovedGroup() async {
@@ -96,7 +106,7 @@ class HomeController extends GetxController {
         .onValue
         .listen((DatabaseEvent event) {
       if (!event.snapshot.exists) {
-        preferences.remove(ValueConstants.groupId);
+        storage.remove(ValueConstants.groupId);
         groupId.value = "";
         showRemovedGroup();
       }
@@ -112,7 +122,7 @@ class HomeController extends GetxController {
             elevation: 0,
             shape:
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-            backgroundColor: Colors.deepPurpleAccent,
+            backgroundColor: ColorsConstants.mainAccent,
             child: Column(
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.center,
@@ -135,7 +145,7 @@ class HomeController extends GetxController {
                           },
                           icon: const Icon(
                             Icons.close,
-                            color: Colors.white,
+                            color: ColorsConstants.contrast,
                             size: 20,
                           )),
                     )
@@ -143,10 +153,10 @@ class HomeController extends GetxController {
                 ),
                 QrImageView(
                     size: MediaQuery.of(context).size.width * 0.4,
-                    backgroundColor: Colors.white,
+                    backgroundColor: ColorsConstants.contrast,
                     data: FirebaseAuth.instance.currentUser!.uid),
                 const Gap(15),
-                widgets.button(Colors.white, 0.4, () {
+                WidgetConstants.button(ColorsConstants.contrast, 0.4, () {
                   Get.back();
                   showDialog(
                     context: context,
@@ -154,7 +164,7 @@ class HomeController extends GetxController {
                       elevation: 0,
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(20)),
-                      backgroundColor: Colors.deepPurpleAccent,
+                      backgroundColor: ColorsConstants.mainAccent,
                       child: Column(
                           mainAxisSize: MainAxisSize.min,
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -175,7 +185,7 @@ class HomeController extends GetxController {
                                       onPressed: () => Get.back(),
                                       icon: const Icon(
                                         Icons.close,
-                                        color: Colors.white,
+                                        color: ColorsConstants.contrast,
                                         size: 20,
                                       )),
                                 )
@@ -197,7 +207,7 @@ class HomeController extends GetxController {
                     Text(AppLocalizations.of(context)!.readQR,
                         style: const TextStyle(
                             fontSize: 10,
-                            color: Colors.deepPurple,
+                            color: ColorsConstants.main,
                             fontWeight: FontWeight.bold)),
                     context),
                 const Gap(20)
@@ -223,14 +233,22 @@ class HomeController extends GetxController {
       DatabaseReference databaseReference =
           FirebaseDatabase.instance.ref().child(ValueConstants.groups).push();
       await databaseReference.set(group.toJson()).then((_) {
-        preferences.setString(ValueConstants.groupId, databaseReference.key!);
+        storage.write(ValueConstants.groupId, databaseReference.key!);
         groupId.value = databaseReference.key!;
         Member owner = Member(
             groupId: groupId.value,
             userId: FirebaseAuth.instance.currentUser!.uid);
         Member member = Member(groupId: groupId.value, userId: capture.text);
-        FirebaseDatabase.instance.ref(ValueConstants.groupMembers).set(owner);
-        FirebaseDatabase.instance.ref(ValueConstants.groupMembers).set(member);
+        FirebaseDatabase.instance
+            .ref()
+            .child(ValueConstants.groupMembers)
+            .push()
+            .set(owner.toJson());
+        FirebaseDatabase.instance
+            .ref()
+            .child(ValueConstants.groupMembers)
+            .push()
+            .set(member.toJson());
         onGroupAdded();
       }).catchError((e) {
         showWarning(ValueConstants.connectGroupError);
@@ -254,7 +272,7 @@ class HomeController extends GetxController {
       if (event.snapshot.exists) {
         Member member = Member.fromJson(Map<String, dynamic>.from(
             event.snapshot.children.first.value as Map));
-        preferences.setString(ValueConstants.groupId, member.groupId);
+        storage.write(ValueConstants.groupId, member.groupId);
         groupId.value = member.groupId;
         onGroupAdded();
       }

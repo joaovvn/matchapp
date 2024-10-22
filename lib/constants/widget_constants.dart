@@ -4,6 +4,8 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
+import 'package:match_app/constants/colors_constants.dart';
 import 'package:match_app/constants/function_constants.dart';
 import 'package:match_app/constants/image_constants.dart';
 import 'package:match_app/models/food_type.dart';
@@ -14,25 +16,31 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class WidgetConstants {
-  Widget button(Color color, double width, Function()? onPressed, Widget child,
-      BuildContext context) {
+  static Widget button(Color color, double width, Function()? onPressed,
+      Widget child, BuildContext context,
+      {Color borderColor = ColorsConstants.contrast}) {
     return ElevatedButton(
         style: ButtonStyle(
             fixedSize: WidgetStatePropertyAll(
                 Size(MediaQuery.of(context).size.width * width, 48)),
             backgroundColor: WidgetStatePropertyAll(color),
             shape: WidgetStatePropertyAll(RoundedRectangleBorder(
-              side: const BorderSide(color: Colors.white, width: 2),
+              side: BorderSide(color: borderColor, width: 2),
               borderRadius: BorderRadius.circular(12.0),
             ))),
         onPressed: onPressed,
         child: child);
   }
 
-  AppBar appBar(bool isHome, BuildContext context, {Function? onPressed}) {
+  static Widget textButton(Function()? onPressed, Widget child) {
+    return TextButton(onPressed: onPressed, child: child);
+  }
+
+  static AppBar appBar(bool isHome, BuildContext context,
+      {Function? onPressed}) {
     return AppBar(
       toolbarHeight: 120,
-      backgroundColor: Colors.white,
+      backgroundColor: ColorsConstants.contrast,
       centerTitle: true,
       title: Image.asset(
         ImageConstants.logo,
@@ -42,7 +50,7 @@ class WidgetConstants {
           : IconButton(
               icon: const Icon(
                 Icons.arrow_back_rounded,
-                color: Colors.deepPurple,
+                color: ColorsConstants.main,
               ),
               onPressed: () {
                 Get.until((route) => route.isFirst);
@@ -51,20 +59,22 @@ class WidgetConstants {
     );
   }
 
-  showWarning(BuildContext context, String text) {
+  static showWarning(BuildContext context, String text) {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      backgroundColor: Colors.deepPurple,
+      backgroundColor: ColorsConstants.main,
       duration: const Duration(seconds: 1, milliseconds: 500),
       content: Text(
         text,
         textAlign: TextAlign.center,
         style: const TextStyle(
-            color: Colors.white, fontSize: 15, fontWeight: FontWeight.bold),
+            color: ColorsConstants.contrast,
+            fontSize: 15,
+            fontWeight: FontWeight.bold),
       ),
     ));
   }
 
-  registerDialog(BuildContext context) {
+  static registerDialog(BuildContext context) {
     Size screenSize = MediaQuery.of(context).size;
     showDialog(
       context: context,
@@ -89,7 +99,7 @@ class WidgetConstants {
                           AppLocalizations.of(context)!.registeredSuccesfully,
                           textAlign: TextAlign.center,
                           style: const TextStyle(
-                              color: Colors.deepPurple,
+                              color: ColorsConstants.main,
                               fontSize: 30,
                               fontWeight: FontWeight.bold),
                         ),
@@ -100,13 +110,13 @@ class WidgetConstants {
                 Padding(
                   padding: EdgeInsets.symmetric(
                       horizontal: screenSize.width * 0.05, vertical: 20.0),
-                  child: button(Colors.deepPurple, 0.9, () {
+                  child: button(ColorsConstants.main, 0.9, () {
                     Get.until((route) => route.isFirst);
                   },
                       Text(AppLocalizations.of(context)!.ok,
                           style: const TextStyle(
                               fontSize: 10,
-                              color: Colors.white,
+                              color: ColorsConstants.contrast,
                               fontWeight: FontWeight.bold)),
                       context),
                 )
@@ -116,7 +126,7 @@ class WidgetConstants {
     );
   }
 
-  restaurantMatchDialog(
+  static restaurantMatchDialog(
       BuildContext context, Restaurant restaurant, bool showMenu) {
     Size screenSize = MediaQuery.of(context).size;
     showDialog(
@@ -145,7 +155,7 @@ class WidgetConstants {
                                 AppLocalizations.of(context)!.match,
                                 textAlign: TextAlign.center,
                                 style: const TextStyle(
-                                    color: Colors.deepPurple,
+                                    color: ColorsConstants.main,
                                     fontSize: 30,
                                     fontWeight: FontWeight.bold),
                               ),
@@ -165,7 +175,7 @@ class WidgetConstants {
                                 restaurant.title,
                                 style: const TextStyle(
                                     fontWeight: FontWeight.bold,
-                                    color: Colors.deepPurple,
+                                    color: ColorsConstants.main,
                                     fontSize: 30),
                               ),
                             ),
@@ -177,7 +187,8 @@ class WidgetConstants {
                               padding: EdgeInsets.symmetric(
                                   horizontal: screenSize.width * 0.05,
                                   vertical: 20.0),
-                              child: button(Colors.deepPurple, 0.9, () async {
+                              child: button(ColorsConstants.main, 0.9,
+                                  () async {
                                 Get.back();
                                 Get.off(() => SalesScreen(
                                       restaurant: restaurant,
@@ -186,7 +197,7 @@ class WidgetConstants {
                                   Text(AppLocalizations.of(context)!.placeOrder,
                                       style: const TextStyle(
                                           fontSize: 10,
-                                          color: Colors.white,
+                                          color: ColorsConstants.contrast,
                                           fontWeight: FontWeight.bold)),
                                   context),
                             )
@@ -196,14 +207,14 @@ class WidgetConstants {
                             left: screenSize.width * 0.05,
                             right: screenSize.width * 0.05,
                             bottom: 20.0),
-                        child: button(Colors.deepPurple, 0.9, () async {
+                        child: button(ColorsConstants.main, 0.9, () async {
                           await launchUrl(Uri.parse(
                               "https://maps.google.com/?q=${restaurant.title}"));
                         },
                             Text(AppLocalizations.of(context)!.findLocation,
                                 style: const TextStyle(
                                     fontSize: 10,
-                                    color: Colors.white,
+                                    color: ColorsConstants.contrast,
                                     fontWeight: FontWeight.bold)),
                             context),
                       ),
@@ -212,14 +223,14 @@ class WidgetConstants {
                             left: screenSize.width * 0.05,
                             right: screenSize.width * 0.05,
                             bottom: 20.0),
-                        child: button(Colors.deepPurple, 0.9, () {
+                        child: button(ColorsConstants.main, 0.9, () {
                           Get.until((route) => route.isFirst);
                           FunctionConstants.resetVotes();
                         },
                             Text(AppLocalizations.of(context)!.ok,
                                 style: const TextStyle(
                                     fontSize: 10,
-                                    color: Colors.white,
+                                    color: ColorsConstants.contrast,
                                     fontWeight: FontWeight.bold)),
                             context),
                       )
@@ -228,13 +239,13 @@ class WidgetConstants {
             ));
   }
 
-  foodMatchDialog(BuildContext context, FoodType foodType) {
+  static foodMatchDialog(BuildContext context, FoodType foodType) {
     Size screenSize = MediaQuery.of(context).size;
     showDialog(
         context: context,
         barrierDismissible: false,
         builder: (context) => Dialog(
-              backgroundColor: Colors.white,
+              backgroundColor: ColorsConstants.contrast,
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8)),
               child: Container(
@@ -256,7 +267,7 @@ class WidgetConstants {
                                 AppLocalizations.of(context)!.match,
                                 textAlign: TextAlign.center,
                                 style: const TextStyle(
-                                    color: Colors.deepPurple,
+                                    color: ColorsConstants.main,
                                     fontSize: 30,
                                     fontWeight: FontWeight.bold),
                               ),
@@ -268,7 +279,7 @@ class WidgetConstants {
                                 AppLocalizations.of(context)!.chooseRestaurant,
                                 textAlign: TextAlign.center,
                                 style: const TextStyle(
-                                    color: Colors.deepPurple,
+                                    color: ColorsConstants.main,
                                     fontSize: 15,
                                     fontWeight: FontWeight.bold),
                               ),
@@ -289,7 +300,7 @@ class WidgetConstants {
                                 child: Text(
                                   foodType.title,
                                   style: const TextStyle(
-                                    color: Colors.deepPurple,
+                                    color: ColorsConstants.main,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
@@ -301,7 +312,7 @@ class WidgetConstants {
                       Padding(
                         padding: EdgeInsets.symmetric(
                             horizontal: screenSize.width * 0.05, vertical: 20),
-                        child: button(Colors.deepPurple, 0.9, () {
+                        child: button(ColorsConstants.main, 0.9, () {
                           Get.back();
                           Get.off(() => RestaurantMatchScreen(
                                 foodTypeId: foodType.id,
@@ -310,7 +321,7 @@ class WidgetConstants {
                             Text(AppLocalizations.of(context)!.proceed,
                                 style: const TextStyle(
                                     fontSize: 10,
-                                    color: Colors.white,
+                                    color: ColorsConstants.contrast,
                                     fontWeight: FontWeight.bold)),
                             context),
                       )
@@ -319,7 +330,7 @@ class WidgetConstants {
             ));
   }
 
-  noGroupDialog(BuildContext context) {
+  static noGroupDialog(BuildContext context) {
     Size screenSize = MediaQuery.of(context).size;
     showDialog(
         context: context,
@@ -343,7 +354,7 @@ class WidgetConstants {
                           AppLocalizations.of(context)!.groupNotAdded,
                           textAlign: TextAlign.center,
                           style: const TextStyle(
-                              color: Colors.deepPurple,
+                              color: ColorsConstants.main,
                               fontSize: 20,
                               fontWeight: FontWeight.bold),
                         ),
@@ -352,13 +363,13 @@ class WidgetConstants {
                         padding: EdgeInsets.symmetric(
                             horizontal: screenSize.width * 0.05,
                             vertical: 20.0),
-                        child: button(Colors.deepPurple, 0.9, () {
+                        child: button(ColorsConstants.main, 0.9, () {
                           Get.until((route) => route.isFirst);
                         },
                             Text(AppLocalizations.of(context)!.backToHome,
                                 style: const TextStyle(
                                     fontSize: 10,
-                                    color: Colors.white,
+                                    color: ColorsConstants.contrast,
                                     fontWeight: FontWeight.bold)),
                             context),
                       )
@@ -369,7 +380,7 @@ class WidgetConstants {
             )));
   }
 
-  noMatchDialog(BuildContext context) {
+  static noMatchDialog(BuildContext context) {
     Size screenSize = MediaQuery.of(context).size;
     showDialog(
         context: context,
@@ -393,7 +404,7 @@ class WidgetConstants {
                           AppLocalizations.of(context)!.noMatch,
                           textAlign: TextAlign.center,
                           style: const TextStyle(
-                              color: Colors.deepPurple,
+                              color: ColorsConstants.main,
                               fontSize: 20,
                               fontWeight: FontWeight.bold),
                         ),
@@ -402,14 +413,14 @@ class WidgetConstants {
                         padding: EdgeInsets.symmetric(
                             horizontal: screenSize.width * 0.05,
                             vertical: 20.0),
-                        child: button(Colors.deepPurple, 0.9, () {
+                        child: button(ColorsConstants.main, 0.9, () {
                           FunctionConstants.resetVotes();
                           Get.until((route) => route.isFirst);
                         },
                             Text(AppLocalizations.of(context)!.backToHome,
                                 style: const TextStyle(
                                     fontSize: 10,
-                                    color: Colors.white,
+                                    color: ColorsConstants.contrast,
                                     fontWeight: FontWeight.bold)),
                             context),
                       )
@@ -420,7 +431,7 @@ class WidgetConstants {
             )));
   }
 
-  Widget dropdown(List<DropdownMenuItem> items, String title,
+  static Widget dropdown(List<DropdownMenuItem> items, String title,
       Function(dynamic)? onChanged, dynamic value) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 30.0),
@@ -432,14 +443,14 @@ class WidgetConstants {
             child: Text(
               title,
               style: const TextStyle(
-                  color: Colors.deepPurple, fontWeight: FontWeight.w600),
+                  color: ColorsConstants.main, fontWeight: FontWeight.w600),
             ),
           ),
           DropdownButtonFormField(
             decoration: InputDecoration(
               border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8),
-                  borderSide: const BorderSide(color: Colors.deepPurple)),
+                  borderSide: const BorderSide(color: ColorsConstants.main)),
             ),
             items: items,
             onChanged: onChanged,
@@ -450,7 +461,8 @@ class WidgetConstants {
     );
   }
 
-  Widget imagePicker(Uint8List? image, Function() onTap, BuildContext context) {
+  static Widget imagePicker(
+      Uint8List? image, Function() onTap, BuildContext context) {
     return Expanded(
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 30.0),
@@ -462,7 +474,7 @@ class WidgetConstants {
               child: Text(
                 AppLocalizations.of(context)!.image,
                 style: const TextStyle(
-                    color: Colors.deepPurple, fontWeight: FontWeight.w600),
+                    color: ColorsConstants.main, fontWeight: FontWeight.w600),
               ),
             ),
             Expanded(
@@ -471,8 +483,9 @@ class WidgetConstants {
                   child: Container(
                     decoration: BoxDecoration(
                         border: Border.all(
-                          color:
-                              image == null ? Colors.grey : Colors.deepPurple,
+                          color: image == null
+                              ? Colors.grey
+                              : ColorsConstants.main,
                         ),
                         borderRadius: BorderRadius.circular(8)),
                     child: image == null
@@ -492,9 +505,12 @@ class WidgetConstants {
     );
   }
 
-  Widget textField(TextEditingController controller, String title) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 30.0),
+  static Widget textField(TextEditingController controller, String title,
+      BuildContext context, double width,
+      {bool isPassword = false}) {
+    Size screenSize = MediaQuery.of(context).size;
+    return SizedBox(
+      width: screenSize.width * width,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -503,17 +519,18 @@ class WidgetConstants {
             child: Text(
               title,
               style: const TextStyle(
-                  color: Colors.deepPurple, fontWeight: FontWeight.w600),
+                  color: ColorsConstants.main, fontWeight: FontWeight.w600),
             ),
           ),
           TextField(
             style: const TextStyle(
-                color: Colors.deepPurple, fontWeight: FontWeight.w600),
+                color: ColorsConstants.main, fontWeight: FontWeight.w600),
             controller: controller,
-            cursorColor: Colors.deepPurple,
+            obscureText: isPassword,
+            cursorColor: ColorsConstants.main,
             decoration: InputDecoration(
                 border: OutlineInputBorder(
-                    borderSide: const BorderSide(color: Colors.deepPurple),
+                    borderSide: const BorderSide(color: ColorsConstants.main),
                     borderRadius: BorderRadius.circular(8))),
           ),
         ],
@@ -521,7 +538,40 @@ class WidgetConstants {
     );
   }
 
-  addedGroup(BuildContext context) {
+  static languageSwitch(RxBool isEnglish) {
+    GetStorage storage = GetStorage();
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Image.asset(
+          isEnglish.value
+              ? ImageConstants.brFlagOutlined
+              : ImageConstants.brFlag,
+        ),
+        Switch(
+          value: isEnglish.value,
+          onChanged: (_) {
+            isEnglish.value = !isEnglish.value;
+            Locale locale =
+                isEnglish.value ? const Locale("en") : const Locale("pt");
+            Get.updateLocale(locale);
+            storage.write("locale", locale.languageCode);
+          },
+          inactiveTrackColor: ColorsConstants.brGreen,
+          inactiveThumbColor: ColorsConstants.brYellow,
+          activeColor: ColorsConstants.usBlue,
+          activeTrackColor: ColorsConstants.usRed,
+        ),
+        Image.asset(
+          isEnglish.value
+              ? ImageConstants.usFlag
+              : ImageConstants.usFlagOutlined,
+        ),
+      ],
+    );
+  }
+
+  static addedGroup(BuildContext context) {
     Size screenSize = MediaQuery.of(context).size;
     showDialog(
         context: context,
@@ -546,7 +596,7 @@ class WidgetConstants {
                           AppLocalizations.of(context)!.groupAdded,
                           textAlign: TextAlign.center,
                           style: const TextStyle(
-                              color: Colors.deepPurple,
+                              color: ColorsConstants.main,
                               fontSize: 20,
                               fontWeight: FontWeight.bold),
                         ),
@@ -555,13 +605,13 @@ class WidgetConstants {
                         padding: EdgeInsets.symmetric(
                             horizontal: screenSize.width * 0.05,
                             vertical: 20.0),
-                        child: button(Colors.deepPurple, 0.9, () {
+                        child: button(ColorsConstants.main, 0.9, () {
                           Get.back();
                         },
                             Text(AppLocalizations.of(context)!.ok,
                                 style: const TextStyle(
                                     fontSize: 10,
-                                    color: Colors.white,
+                                    color: ColorsConstants.contrast,
                                     fontWeight: FontWeight.bold)),
                             context),
                       )
@@ -572,7 +622,7 @@ class WidgetConstants {
             )));
   }
 
-  removedGroup(BuildContext context) {
+  static removedGroup(BuildContext context) {
     Size screenSize = MediaQuery.of(context).size;
     showDialog(
         context: context,
@@ -597,7 +647,7 @@ class WidgetConstants {
                           AppLocalizations.of(context)!.groupRemoved,
                           textAlign: TextAlign.center,
                           style: const TextStyle(
-                              color: Colors.deepPurple,
+                              color: ColorsConstants.main,
                               fontSize: 20,
                               fontWeight: FontWeight.bold),
                         ),
@@ -606,13 +656,13 @@ class WidgetConstants {
                         padding: EdgeInsets.symmetric(
                             horizontal: screenSize.width * 0.05,
                             vertical: 20.0),
-                        child: button(Colors.deepPurple, 0.9, () {
+                        child: button(ColorsConstants.main, 0.9, () {
                           Get.back();
                         },
                             Text(AppLocalizations.of(context)!.ok,
                                 style: const TextStyle(
                                     fontSize: 10,
-                                    color: Colors.white,
+                                    color: ColorsConstants.contrast,
                                     fontWeight: FontWeight.bold)),
                             context),
                       )

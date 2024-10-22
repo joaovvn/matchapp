@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:appinio_swiper/appinio_swiper.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:match_app/constants/colors_constants.dart';
 import 'package:match_app/constants/widget_constants.dart';
 import 'package:match_app/screens/match/controller/food_type_match_controller.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -15,7 +16,6 @@ class FoodTypeMatchScreen extends StatefulWidget {
 }
 
 class _FoodTypeMatchScreenState extends State<FoodTypeMatchScreen> {
-  WidgetConstants widgets = WidgetConstants();
   bool finished = false;
   AppinioSwiperController swiperController = AppinioSwiperController();
   @override
@@ -30,7 +30,7 @@ class _FoodTypeMatchScreenState extends State<FoodTypeMatchScreen> {
         Get.put(FoodTypeMatchController(context: context));
     controller.getList();
     return Scaffold(
-      appBar: widgets.appBar(false, context),
+      appBar: WidgetConstants.appBar(false, context),
       body: Obx(() {
         if (controller.foodTypeList.value != null &&
             (controller.foodTypeList.value ?? []).isNotEmpty) {
@@ -48,7 +48,7 @@ class _FoodTypeMatchScreenState extends State<FoodTypeMatchScreen> {
                             style: const TextStyle(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 25,
-                                color: Colors.deepPurple),
+                                color: ColorsConstants.main),
                           ),
                         )
                       : AppinioSwiper(
@@ -71,7 +71,7 @@ class _FoodTypeMatchScreenState extends State<FoodTypeMatchScreen> {
                             return Container(
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(20),
-                                color: Colors.deepPurple,
+                                color: ColorsConstants.main,
                               ),
                               alignment: Alignment.center,
                               child: Column(
@@ -126,7 +126,7 @@ class _FoodTypeMatchScreenState extends State<FoodTypeMatchScreen> {
                                       WidgetStatePropertyAll(Colors.red)),
                               icon: const Icon(
                                 Icons.close,
-                                color: Colors.white,
+                                color: ColorsConstants.contrast,
                               )),
                           IconButton(
                               iconSize: 50,
@@ -136,7 +136,7 @@ class _FoodTypeMatchScreenState extends State<FoodTypeMatchScreen> {
                                       WidgetStatePropertyAll(Colors.green)),
                               icon: const Icon(
                                 Icons.check,
-                                color: Colors.white,
+                                color: ColorsConstants.contrast,
                               ))
                         ],
                       ),
@@ -147,7 +147,7 @@ class _FoodTypeMatchScreenState extends State<FoodTypeMatchScreen> {
         return controller.foodTypeList.value == null
             ? const Center(
                 child: CircularProgressIndicator(
-                  color: Colors.deepPurple,
+                  color: ColorsConstants.main,
                 ),
               )
             : Center(
@@ -159,7 +159,7 @@ class _FoodTypeMatchScreenState extends State<FoodTypeMatchScreen> {
                     style: const TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 25,
-                        color: Colors.deepPurple),
+                        color: ColorsConstants.main),
                   ),
                 ),
               );

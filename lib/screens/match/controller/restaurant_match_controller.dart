@@ -5,19 +5,19 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:match_app/constants/function_constants.dart';
 import 'package:match_app/constants/value_constants.dart';
 import 'package:match_app/constants/widget_constants.dart';
 import 'package:match_app/models/restaurant.dart';
 import 'package:match_app/models/vote.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class RestaurantMatchController extends GetxController {
   RestaurantMatchController({required this.context, required this.foodTypeId});
   BuildContext context;
-  WidgetConstants widgets = WidgetConstants();
   late String groupId;
   String foodTypeId;
+  GetStorage storage = GetStorage();
   bool match = false;
   Rx<List<Restaurant>?> restaurantList = Rx<List<Restaurant>?>(null);
 
@@ -54,8 +54,7 @@ class RestaurantMatchController extends GetxController {
   }
 
   getUser() async {
-    SharedPreferences preferences = await SharedPreferences.getInstance();
-    String? id = preferences.getString(ValueConstants.groupId);
+    String? id = storage.read(ValueConstants.groupId);
     if (id != null) {
       groupId = id;
       verifyMatches();
@@ -112,17 +111,17 @@ class RestaurantMatchController extends GetxController {
   openMatchDialog(Restaurant restaurant) async {
     if (!match) {
       match = true;
-      widgets.restaurantMatchDialog(context, restaurant, false);
+      WidgetConstants.restaurantMatchDialog(context, restaurant, false);
     }
   }
 
   openNoMatchDialog() {
     if (!match) {
-      widgets.noMatchDialog(context);
+      WidgetConstants.noMatchDialog(context);
     }
   }
 
   openNoGroupDialog() {
-    widgets.noGroupDialog(context);
+    WidgetConstants.noGroupDialog(context);
   }
 }

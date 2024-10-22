@@ -1,9 +1,9 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:get/get.dart';
-import 'package:match_app/screens/home/home_screen.dart';
+import 'package:match_app/constants/colors_constants.dart';
+import 'package:match_app/screens/user/login_screen.dart';
 import 'firebase_options.dart';
 
 void main() async {
@@ -11,7 +11,6 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  await FirebaseAuth.instance.signInAnonymously();
   runApp(const FoodMatch());
 }
 
@@ -30,10 +29,10 @@ class FoodMatch extends StatelessWidget {
             TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
           }),
           textTheme: Theme.of(context).textTheme.apply(
-              bodyColor: Colors.white,
-              displayColor: Colors.white,
+              bodyColor: ColorsConstants.contrast,
+              displayColor: ColorsConstants.contrast,
               fontFamily: 'Kodchasan')),
-      home: const HomeScreen(),
+      home: const LoginScreen(),
     );
   }
 }

@@ -3,7 +3,6 @@ import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 import 'package:match_app/constants/colors_constants.dart';
 import 'package:match_app/constants/function_constants.dart';
-import 'package:match_app/constants/image_constants.dart';
 import 'package:match_app/constants/widget_constants.dart';
 import 'package:match_app/screens/home/controller/home_controller.dart';
 import 'package:match_app/screens/match/food_type_match_screen.dart';
@@ -27,35 +26,36 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
   }
 
-  WidgetConstants widgets = WidgetConstants();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: widgets.appBar(true, context),
-        backgroundColor: Colors.deepPurpleAccent,
+        appBar: WidgetConstants.appBar(true, context),
+        backgroundColor: ColorsConstants.mainAccent,
         body: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              widgets.button(Colors.deepPurple, 0.5, () {
+              WidgetConstants.button(ColorsConstants.main, 0.5, () {
                 FunctionConstants.resetVotes();
                 Get.to(() => const FoodTypeMatchScreen());
               },
                   Text(
                     AppLocalizations.of(context)!.start,
                     style: const TextStyle(
-                        fontWeight: FontWeight.bold, color: Colors.white),
+                        fontWeight: FontWeight.bold,
+                        color: ColorsConstants.contrast),
                   ),
                   context),
               const Gap(20),
-              widgets.button(
-                  Colors.white,
+              WidgetConstants.button(
+                  ColorsConstants.contrast,
                   0.5,
                   () => Get.to(() => const RegisterScreen()),
                   Text(
                     AppLocalizations.of(context)!.register,
                     style: const TextStyle(
-                        color: Colors.deepPurple, fontWeight: FontWeight.bold),
+                        color: ColorsConstants.main,
+                        fontWeight: FontWeight.bold),
                   ),
                   context),
               const Gap(50),
@@ -67,7 +67,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   },
                   style: ButtonStyle(
                     overlayColor: WidgetStateColor.resolveWith(
-                        (states) => Colors.white.withOpacity(0.1)),
+                        (states) => ColorsConstants.contrast.withOpacity(0.1)),
                   ),
                   child: Obx(() {
                     return Text(
@@ -76,44 +76,13 @@ class _HomeScreenState extends State<HomeScreen> {
                           : AppLocalizations.of(context)!.removeGroup,
                       style: const TextStyle(
                           fontSize: 12,
-                          color: Colors.white,
+                          color: ColorsConstants.contrast,
                           decoration: TextDecoration.underline,
-                          decorationColor: Colors.white),
+                          decorationColor: ColorsConstants.contrast),
                     );
                   })),
               Obx(() {
-                return Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Image.asset(
-                      controller.isEnglish.value
-                          ? ImageConstants.brFlagOutlined
-                          : ImageConstants.brFlag,
-                    ),
-                    Switch(
-                      value: controller.isEnglish.value,
-                      onChanged: (_) {
-                        controller.isEnglish.value =
-                            !controller.isEnglish.value;
-                        Locale locale = controller.isEnglish.value
-                            ? const Locale("en")
-                            : const Locale("pt");
-                        Get.updateLocale(locale);
-                        controller.preferences
-                            .setString("locale", locale.languageCode);
-                      },
-                      inactiveTrackColor: ColorsConstants.brGreen,
-                      inactiveThumbColor: ColorsConstants.brYellow,
-                      activeColor: ColorsConstants.usBlue,
-                      activeTrackColor: ColorsConstants.usRed,
-                    ),
-                    Image.asset(
-                      controller.isEnglish.value
-                          ? ImageConstants.usFlag
-                          : ImageConstants.usFlagOutlined,
-                    ),
-                  ],
-                );
+                return WidgetConstants.languageSwitch(controller.isEnglish);
               }),
             ]));
   }
