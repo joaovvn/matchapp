@@ -52,5 +52,7 @@
     "networkRequestFailed": "Erro de rede. Verifique sua conexão com a internet.",
     "invalidCredential": "Credenciais de login inválidas.",
     "operationNotAllowed": "O login com e-mail/senha não está habilitado.",
-    "errorLogout": "Erro ao fazer Logout. Tente novamente!"
+    "errorLogout": "Erro ao fazer Logout. Tente novamente!",
+    "unexpectedError": "Erro inesperado. Tente novamente.",
+    "unknownError": "Erro desconhecido: "
 }

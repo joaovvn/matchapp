@@ -52,5 +52,7 @@
     "networkRequestFailed": "Network error. Check your internet connection.",
     "invalidCredential": "Invalid login credentials.",
     "operationNotAllowed": "Email/password login is not enabled.",
-    "errorLogout": "Error logging out. Try again!"
+    "errorLogout": "Error logging out. Try again!",
+    "unexpectedError": "Unexpected error. Please try again.",
+    "unknownError": "Unknown error: "
 }

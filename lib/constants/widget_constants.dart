@@ -9,6 +9,7 @@ import 'package:get_storage/get_storage.dart';
 import 'package:match_app/constants/colors_constants.dart';
 import 'package:match_app/constants/function_constants.dart';
 import 'package:match_app/constants/image_constants.dart';
+import 'package:match_app/constants/loading_state.dart';
 import 'package:match_app/models/food_type.dart';
 import 'package:match_app/models/restaurant.dart';
 import 'package:match_app/screens/match/restaurant_match_screen.dart';
@@ -682,5 +683,33 @@ class WidgetConstants {
                 ],
               ),
             )));
+  }
+
+  static Widget loadingStateWidget(
+      LoadingState loadingState, Widget idleWidget) {
+    Widget widget;
+    switch (loadingState) {
+      case LoadingState.idle:
+        widget = idleWidget;
+        break;
+      case LoadingState.loading:
+        widget = const CircularProgressIndicator(
+          color: ColorsConstants.mainAccent,
+        );
+        break;
+      case LoadingState.success:
+        widget = const Icon(Icons.check,
+            color: Colors.green, size: 50, key: ValueKey(LoadingState.success));
+        break;
+      case LoadingState.error:
+        widget = const Icon(Icons.close,
+            color: Colors.red, size: 50, key: ValueKey(LoadingState.error));
+        break;
+    }
+
+    return AnimatedSwitcher(
+      duration: Durations.medium2,
+      child: widget,
+    );
   }
 }

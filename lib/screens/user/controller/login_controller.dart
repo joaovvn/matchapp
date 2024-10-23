@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:match_app/constants/loading_state.dart';
 import 'package:match_app/constants/widget_constants.dart';
 import 'package:match_app/screens/home/home_screen.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -14,17 +15,25 @@ class LoginController extends GetxController {
   TextEditingController passwordController = TextEditingController();
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final GoogleSignIn _googleSignIn = GoogleSignIn();
+  Rx<LoadingState> loadingState = LoadingState.idle.obs;
 
   login() async {
     try {
+      loadingState.value = LoadingState.loading;
       await _auth
           .signInWithEmailAndPassword(
               email: emailController.text.trim(),
               password: passwordController.text.trim())
-          .then((_) {
+          .then((_) async {
+        loadingState.value = LoadingState.success;
+        await Future.delayed(Durations.long1);
         Get.off(() => const HomeScreen());
+        loadingState.value = LoadingState.idle;
       });
     } on FirebaseAuthException catch (e) {
+      loadingState.value = LoadingState.error;
+      await Future.delayed(Durations.long1);
+      loadingState.value = LoadingState.idle;
       switch (e.code) {
         case 'invalid-email':
           showWarning(AppLocalizations.of(context)!.invalidEmail);
@@ -54,17 +63,27 @@ class LoginController extends GetxController {
           showWarning(AppLocalizations.of(context)!.operationNotAllowed);
           break;
         default:
-          showWarning('Unknown error: ${e.code}');
+          showWarning(
+              '${AppLocalizations.of(context)!.unknownError} ${e.code}');
       }
     } catch (e) {
-      showWarning('Unexpected error. Please try again.');
+      loadingState.value = LoadingState.error;
+      await Future.delayed(Durations.long1);
+      loadingState.value = LoadingState.idle;
+      unexpectedErrorWarning();
     }
+  }
+
+  unexpectedErrorWarning() {
+    showWarning(AppLocalizations.of(context)!.unexpectedError);
   }
 
   signInWithGoogle() async {
     try {
       GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
+      loadingState.value = LoadingState.loading;
       if (googleUser == null) {
+        loadingState.value = LoadingState.idle;
         return;
       }
 
@@ -74,10 +93,16 @@ class LoginController extends GetxController {
         idToken: googleAuth.idToken,
       );
 
-      await _auth.signInWithCredential(credential).then((_) {
+      await _auth.signInWithCredential(credential).then((_) async {
+        loadingState.value = LoadingState.success;
+        await Future.delayed(Durations.long1);
         Get.off(() => const HomeScreen());
+        loadingState.value = LoadingState.idle;
       });
     } on FirebaseAuthException catch (e) {
+      loadingState.value = LoadingState.error;
+      await Future.delayed(Durations.long1);
+      loadingState.value = LoadingState.idle;
       switch (e.code) {
         case 'invalid-email':
           showWarning(AppLocalizations.of(context)!.invalidEmail);
@@ -107,11 +132,14 @@ class LoginController extends GetxController {
           showWarning(AppLocalizations.of(context)!.operationNotAllowed);
           break;
         default:
-          showWarning('Unknown error: ${e.code}');
+          showWarning(
+              '${AppLocalizations.of(context)!.unknownError} ${e.code}');
       }
     } catch (e) {
-      debugPrint(e.toString());
-      showWarning('Unexpected error. Please try again.');
+      loadingState.value = LoadingState.error;
+      await Future.delayed(Durations.long1);
+      loadingState.value = LoadingState.idle;
+      unexpectedErrorWarning();
     }
   }
 

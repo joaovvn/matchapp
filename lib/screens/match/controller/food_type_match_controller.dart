@@ -36,7 +36,9 @@ class FoodTypeMatchController extends GetxController {
             Map<String, dynamic>.from(child.value as Map), child.key!))
         .toList();
 
-    verifyMatches();
+    if ((foodTypeList.value ?? []).isNotEmpty) {
+      verifyMatches();
+    }
   }
 
   getUser() async {
@@ -73,6 +75,7 @@ class FoodTypeMatchController extends GetxController {
           .equalTo(foodType.id)
           .onValue
           .listen((DatabaseEvent event) {
+        debugPrint(event.snapshot.children.toString());
         if (event.snapshot.children
                 .where((child) =>
                     FoodVote.fromJson(
@@ -85,16 +88,16 @@ class FoodTypeMatchController extends GetxController {
         }
       });
     }
-    reference
-        .orderByChild(ValueConstants.groupId)
-        .equalTo(groupId)
-        .onValue
-        .listen((DatabaseEvent event) {
-      if (event.snapshot.children.length ==
-          groupSize * foodTypeList.value!.length) {
-        openNoMatchDialog();
-      }
-    });
+    // reference
+    //     .orderByChild(ValueConstants.groupId)
+    //     .equalTo(groupId)
+    //     .onValue
+    //     .listen((DatabaseEvent event) {
+    //   if (event.snapshot.children.length ==
+    //       groupSize * foodTypeList.value!.length) {
+    //     openNoMatchDialog();
+    //   }
+    // });
   }
 
   openMatchDialog(FoodType foodType) {

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
@@ -19,16 +21,16 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 class HomeController extends GetxController {
   HomeController({required this.context});
   BuildContext context;
-  GetStorage storage = GetStorage();
+  final GetStorage _storage = GetStorage();
   RxString groupId = "".obs;
   RxBool isEnglish = (Get.locale == const Locale("en")).obs;
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final GoogleSignIn _googleSignIn = GoogleSignIn();
-  User? user;
+  StreamSubscription<DatabaseEvent>? _groupRemovedListener;
+  StreamSubscription<DatabaseEvent>? _groupAddedListener;
 
   init() async {
     String? key;
-    user = _auth.currentUser;
     if (groupId.isEmpty) {
       await FirebaseDatabase.instance
           .ref(ValueConstants.groupMembers)
@@ -37,7 +39,9 @@ class HomeController extends GetxController {
           .once()
           .then((DatabaseEvent event) {
         if (event.snapshot.exists) {
-          key = event.snapshot.children.first.key;
+          key = Member.fromJson(Map<String, dynamic>.from(
+                  event.snapshot.children.first.value as Map))
+              .groupId;
         }
       });
     } else {
@@ -46,10 +50,10 @@ class HomeController extends GetxController {
           .key;
     }
     if (key == null) {
-      storage.remove(ValueConstants.groupId);
+      _storage.remove(ValueConstants.groupId);
       groupId.value = "";
     } else {
-      storage.write(ValueConstants.groupId, key!);
+      _storage.write(ValueConstants.groupId, key!);
       groupId.value = key!;
       FunctionConstants.resetVotes();
       verifyRemovedGroup();
@@ -85,15 +89,15 @@ class HomeController extends GetxController {
     FirebaseDatabase.instance
         .ref(ValueConstants.groups)
         .orderByChild(ValueConstants.groupId)
-        .equalTo(groupId)
+        .equalTo(groupId.value)
         .once()
         .then((DatabaseEvent event) {
       event.snapshot.ref.remove();
-      storage.remove(ValueConstants.groupId);
+      _storage.remove(ValueConstants.groupId);
       FirebaseDatabase.instance
           .ref(ValueConstants.groupMembers)
           .orderByChild(ValueConstants.groupId)
-          .equalTo(groupId)
+          .equalTo(groupId.value)
           .once()
           .then((DatabaseEvent event) {
         event.snapshot.ref.remove();
@@ -116,15 +120,14 @@ class HomeController extends GetxController {
   }
 
   verifyRemovedGroup() async {
-    FirebaseDatabase.instance
+    _groupRemovedListener = FirebaseDatabase.instance
         .ref('${ValueConstants.groups}/${groupId.value}')
-        .onValue
+        .onChildRemoved
         .listen((DatabaseEvent event) {
-      if (!event.snapshot.exists) {
-        storage.remove(ValueConstants.groupId);
-        groupId.value = "";
-        showRemovedGroup();
-      }
+      _storage.remove(ValueConstants.groupId);
+      groupId.value = "";
+      showRemovedGroup();
+      _groupRemovedListener!.cancel();
     });
   }
 
@@ -248,7 +251,7 @@ class HomeController extends GetxController {
       DatabaseReference databaseReference =
           FirebaseDatabase.instance.ref().child(ValueConstants.groups).push();
       await databaseReference.set(group.toJson()).then((_) {
-        storage.write(ValueConstants.groupId, databaseReference.key!);
+        _storage.write(ValueConstants.groupId, databaseReference.key!);
         groupId.value = databaseReference.key!;
         Member owner =
             Member(groupId: groupId.value, userId: _auth.currentUser!.uid);
@@ -274,10 +277,11 @@ class HomeController extends GetxController {
   onGroupAdded() {
     Get.back();
     showAddedGroup();
+    verifyRemovedGroup();
   }
 
   verifyAddedGroup() {
-    FirebaseDatabase.instance
+    _groupAddedListener = FirebaseDatabase.instance
         .ref(ValueConstants.groupMembers)
         .orderByChild(ValueConstants.userId)
         .equalTo(_auth.currentUser!.uid)
@@ -286,9 +290,10 @@ class HomeController extends GetxController {
       if (event.snapshot.exists) {
         Member member = Member.fromJson(Map<String, dynamic>.from(
             event.snapshot.children.first.value as Map));
-        storage.write(ValueConstants.groupId, member.groupId);
+        _storage.write(ValueConstants.groupId, member.groupId);
         groupId.value = member.groupId;
         onGroupAdded();
+        _groupAddedListener!.cancel();
       }
     });
   }

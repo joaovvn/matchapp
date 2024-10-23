@@ -30,97 +30,127 @@ class _LoginScreenState extends State<LoginScreen> {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Image.asset(
-            ImageConstants.logo,
-          ),
-          const Gap(10),
-          WidgetConstants.button(
-              ColorsConstants.contrast,
-              borderColor: ColorsConstants.main,
-              0.8, () async {
-            await controller.signInWithGoogle();
-          },
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Image.asset(ImageConstants.google),
-                  const Gap(15),
-                  Text(
-                    AppLocalizations.of(context)!.signinWithGoogle,
-                    style: const TextStyle(
-                        color: ColorsConstants.main,
-                        fontWeight: FontWeight.w700),
-                  ),
-                ],
-              ),
-              context),
-          const Gap(10),
-          SizedBox(
-            width: MediaQuery.of(context).size.width * 0.8,
-            child: Row(
+          Expanded(
+            flex: 4,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                const Expanded(
-                  flex: 3,
-                  child: Divider(
-                    height: 2,
-                    color: ColorsConstants.mainAccent,
-                  ),
-                ),
-                Expanded(
-                  child: Text(
-                    AppLocalizations.of(context)!.or,
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
-                        color: ColorsConstants.main,
-                        fontWeight: FontWeight.w700),
-                  ),
-                ),
-                const Expanded(
-                  flex: 3,
-                  child: Divider(
-                    height: 2,
-                    color: ColorsConstants.mainAccent,
-                  ),
+                Image.asset(
+                  ImageConstants.logo,
                 ),
               ],
             ),
           ),
-          const Gap(10),
-          WidgetConstants.textField(controller.emailController,
-              AppLocalizations.of(context)!.email, context, 0.8),
-          WidgetConstants.textField(controller.passwordController,
-              AppLocalizations.of(context)!.password, context, 0.8,
-              isPassword: true),
-          const Gap(10),
-          WidgetConstants.button(ColorsConstants.mainAccent, 0.8, () {
-            controller.login();
-          },
-              Text(
-                AppLocalizations.of(context)!.login,
-                style: const TextStyle(color: ColorsConstants.contrast),
-              ),
-              context),
-          const Gap(10),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                AppLocalizations.of(context)!.noAccount,
-                style: const TextStyle(
-                    color: ColorsConstants.grey, fontWeight: FontWeight.w600),
-              ),
-              WidgetConstants.textButton(
-                  () {},
-                  Text(
-                    AppLocalizations.of(context)!.register,
-                    style: const TextStyle(color: ColorsConstants.mainAccent),
-                  )),
-            ],
+          Expanded(
+            flex: 5,
+            child: Obx(() {
+              return WidgetConstants.loadingStateWidget(
+                controller.loadingState.value,
+                Column(
+                  children: [
+                    WidgetConstants.button(
+                        ColorsConstants.contrast,
+                        borderColor: ColorsConstants.main,
+                        0.8, () async {
+                      await controller.signInWithGoogle();
+                    },
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Image.asset(ImageConstants.google),
+                            const Gap(15),
+                            Text(
+                              AppLocalizations.of(context)!.signinWithGoogle,
+                              style: const TextStyle(
+                                  color: ColorsConstants.main,
+                                  fontWeight: FontWeight.w700),
+                            ),
+                          ],
+                        ),
+                        context),
+                    const Gap(10),
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width * 0.8,
+                      child: Row(
+                        children: [
+                          const Expanded(
+                            flex: 3,
+                            child: Divider(
+                              height: 2,
+                              color: ColorsConstants.mainAccent,
+                            ),
+                          ),
+                          Expanded(
+                            child: Text(
+                              AppLocalizations.of(context)!.or,
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(
+                                  color: ColorsConstants.main,
+                                  fontWeight: FontWeight.w700),
+                            ),
+                          ),
+                          const Expanded(
+                            flex: 3,
+                            child: Divider(
+                              height: 2,
+                              color: ColorsConstants.mainAccent,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const Gap(5),
+                    WidgetConstants.textField(controller.emailController,
+                        AppLocalizations.of(context)!.email, context, 0.8),
+                    const Gap(5),
+                    WidgetConstants.textField(controller.passwordController,
+                        AppLocalizations.of(context)!.password, context, 0.8,
+                        isPassword: true),
+                    const Gap(5),
+                    WidgetConstants.button(ColorsConstants.mainAccent, 0.8, () {
+                      controller.login();
+                    },
+                        Text(
+                          AppLocalizations.of(context)!.login,
+                          style:
+                              const TextStyle(color: ColorsConstants.contrast),
+                        ),
+                        context),
+                    const Gap(5),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          AppLocalizations.of(context)!.noAccount,
+                          style: const TextStyle(
+                              color: ColorsConstants.grey,
+                              fontWeight: FontWeight.w600),
+                        ),
+                        WidgetConstants.textButton(
+                            () {},
+                            Text(
+                              AppLocalizations.of(context)!.register,
+                              style: const TextStyle(
+                                  color: ColorsConstants.mainAccent),
+                            )),
+                      ],
+                    ),
+                  ],
+                ),
+              );
+            }),
           ),
-          const Gap(10),
-          Obx(() {
-            return WidgetConstants.languageSwitch(controller.isEnglish);
-          })
+          Expanded(
+            flex: 3,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Obx(() {
+                  return WidgetConstants.languageSwitch(controller.isEnglish);
+                }),
+              ],
+            ),
+          )
         ],
       ),
     );
