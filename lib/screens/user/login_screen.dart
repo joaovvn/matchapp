@@ -20,7 +20,6 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   void initState() {
     controller = Get.put(LoginController(context: context));
-    controller.init();
     super.initState();
   }
 

@@ -51,5 +51,6 @@
     "userTokenExpired": "Sessão expirada. Faça login novamente.",
     "networkRequestFailed": "Erro de rede. Verifique sua conexão com a internet.",
     "invalidCredential": "Credenciais de login inválidas.",
-    "operationNotAllowed": "O login com e-mail/senha não está habilitado."
+    "operationNotAllowed": "O login com e-mail/senha não está habilitado.",
+    "errorLogout": "Erro ao fazer Logout. Tente novamente!"
 }

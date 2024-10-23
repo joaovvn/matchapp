@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
@@ -37,7 +38,7 @@ class WidgetConstants {
   }
 
   static AppBar appBar(bool isHome, BuildContext context,
-      {Function? onPressed}) {
+      {Function()? onPressed, User? user}) {
     return AppBar(
       toolbarHeight: 120,
       backgroundColor: ColorsConstants.contrast,
@@ -56,6 +57,16 @@ class WidgetConstants {
                 Get.until((route) => route.isFirst);
               },
             ),
+      actions: isHome
+          ? [
+              IconButton(
+                  icon: const Icon(
+                    Icons.logout,
+                    color: ColorsConstants.main,
+                  ),
+                  onPressed: onPressed)
+            ]
+          : null,
     );
   }
 
@@ -550,11 +561,11 @@ class WidgetConstants {
         ),
         Switch(
           value: isEnglish.value,
-          onChanged: (_) {
+          onChanged: (_) async {
             isEnglish.value = !isEnglish.value;
             Locale locale =
                 isEnglish.value ? const Locale("en") : const Locale("pt");
-            Get.updateLocale(locale);
+            await Get.updateLocale(locale);
             storage.write("locale", locale.languageCode);
           },
           inactiveTrackColor: ColorsConstants.brGreen,

@@ -4,12 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:match_app/constants/colors_constants.dart';
 import 'package:match_app/constants/function_constants.dart';
 import 'package:match_app/constants/value_constants.dart';
 import 'package:match_app/constants/widget_constants.dart';
 import 'package:match_app/models/group.dart';
 import 'package:match_app/models/member.dart';
+import 'package:match_app/screens/user/login_screen.dart';
 import 'package:qr_code_dart_scan/qr_code_dart_scan.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -20,22 +22,18 @@ class HomeController extends GetxController {
   GetStorage storage = GetStorage();
   RxString groupId = "".obs;
   RxBool isEnglish = (Get.locale == const Locale("en")).obs;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final GoogleSignIn _googleSignIn = GoogleSignIn();
+  User? user;
 
   init() async {
     String? key;
-    String? language = storage.read('locale');
-    if (language == null) {
-      storage.write('locale', 'en');
-      language = 'en';
-    } else if (language == 'en') {
-      isEnglish.value = true;
-    }
-    Get.updateLocale(Locale(language));
+    user = _auth.currentUser;
     if (groupId.isEmpty) {
       await FirebaseDatabase.instance
           .ref(ValueConstants.groupMembers)
           .orderByChild(ValueConstants.userId)
-          .equalTo(FirebaseAuth.instance.currentUser?.uid)
+          .equalTo(_auth.currentUser?.uid)
           .once()
           .then((DatabaseEvent event) {
         if (event.snapshot.exists) {
@@ -64,6 +62,23 @@ class HomeController extends GetxController {
 
   showRemovedGroup() {
     WidgetConstants.removedGroup(context);
+  }
+
+  logOut() async {
+    try {
+      await _googleSignIn.disconnect();
+
+      await _auth.signOut();
+
+      Get.off(() => const LoginScreen());
+    } catch (e) {
+      showLogoutWarning();
+    }
+  }
+
+  showLogoutWarning() {
+    WidgetConstants.showWarning(
+        context, AppLocalizations.of(context)!.errorLogout);
   }
 
   removeGroup() async {
@@ -154,7 +169,7 @@ class HomeController extends GetxController {
                 QrImageView(
                     size: MediaQuery.of(context).size.width * 0.4,
                     backgroundColor: ColorsConstants.contrast,
-                    data: FirebaseAuth.instance.currentUser!.uid),
+                    data: _auth.currentUser!.uid),
                 const Gap(15),
                 WidgetConstants.button(ColorsConstants.contrast, 0.4, () {
                   Get.back();
@@ -220,12 +235,12 @@ class HomeController extends GetxController {
   onQrFound(Result capture) async {
     Group group = Group(
       id: "",
-      ownerId: FirebaseAuth.instance.currentUser!.uid,
+      ownerId: _auth.currentUser!.uid,
     );
     if (await FirebaseDatabase.instance
         .ref(ValueConstants.groups)
         .orderByChild(ValueConstants.ownerId)
-        .equalTo(FirebaseAuth.instance.currentUser!.uid)
+        .equalTo(_auth.currentUser!.uid)
         .once()
         .then((value) {
       return value.snapshot.children.isEmpty ? true : false;
@@ -235,9 +250,8 @@ class HomeController extends GetxController {
       await databaseReference.set(group.toJson()).then((_) {
         storage.write(ValueConstants.groupId, databaseReference.key!);
         groupId.value = databaseReference.key!;
-        Member owner = Member(
-            groupId: groupId.value,
-            userId: FirebaseAuth.instance.currentUser!.uid);
+        Member owner =
+            Member(groupId: groupId.value, userId: _auth.currentUser!.uid);
         Member member = Member(groupId: groupId.value, userId: capture.text);
         FirebaseDatabase.instance
             .ref()
@@ -266,7 +280,7 @@ class HomeController extends GetxController {
     FirebaseDatabase.instance
         .ref(ValueConstants.groupMembers)
         .orderByChild(ValueConstants.userId)
-        .equalTo(FirebaseAuth.instance.currentUser!.uid)
+        .equalTo(_auth.currentUser!.uid)
         .onValue
         .listen((DatabaseEvent event) {
       if (event.snapshot.exists) {

@@ -29,7 +29,9 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: WidgetConstants.appBar(true, context),
+        appBar: WidgetConstants.appBar(true, context, onPressed: () async {
+          await controller.logOut();
+        }),
         backgroundColor: ColorsConstants.mainAccent,
         body: Column(
             mainAxisAlignment: MainAxisAlignment.center,

@@ -51,5 +51,6 @@
     "userTokenExpired": "Session expired. Please log in again.",
     "networkRequestFailed": "Network error. Check your internet connection.",
     "invalidCredential": "Invalid login credentials.",
-    "operationNotAllowed": "Email/password login is not enabled."
+    "operationNotAllowed": "Email/password login is not enabled.",
+    "errorLogout": "Error logging out. Try again!"
 }

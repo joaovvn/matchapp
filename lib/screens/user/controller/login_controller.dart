@@ -15,16 +15,6 @@ class LoginController extends GetxController {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final GoogleSignIn _googleSignIn = GoogleSignIn();
 
-  init() async {
-    verifyLoggedUser();
-  }
-
-  void verifyLoggedUser() {
-    if (FirebaseAuth.instance.currentUser != null) {
-      Get.off(const HomeScreen());
-    }
-  }
-
   login() async {
     try {
       await _auth
@@ -32,7 +22,7 @@ class LoginController extends GetxController {
               email: emailController.text.trim(),
               password: passwordController.text.trim())
           .then((_) {
-        Get.off(const HomeScreen());
+        Get.off(() => const HomeScreen());
       });
     } on FirebaseAuthException catch (e) {
       switch (e.code) {
@@ -85,7 +75,7 @@ class LoginController extends GetxController {
       );
 
       await _auth.signInWithCredential(credential).then((_) {
-        Get.off(const HomeScreen());
+        Get.off(() => const HomeScreen());
       });
     } on FirebaseAuthException catch (e) {
       switch (e.code) {
