@@ -517,9 +517,12 @@ class WidgetConstants {
     );
   }
 
-  static Widget textField(TextEditingController controller, String title,
-      BuildContext context, double width,
-      {bool isPassword = false}) {
+  static Widget textField(
+      TextEditingController controller, String title, BuildContext context,
+      {bool isPassword = false,
+      bool filled = false,
+      double width = 0.8,
+      Function? onSubmitted}) {
     Size screenSize = MediaQuery.of(context).size;
     return SizedBox(
       width: screenSize.width * width,
@@ -530,17 +533,22 @@ class WidgetConstants {
             padding: const EdgeInsets.only(left: 8.0),
             child: Text(
               title,
-              style: const TextStyle(
-                  color: ColorsConstants.main, fontWeight: FontWeight.w600),
+              style: TextStyle(
+                  color:
+                      filled ? ColorsConstants.contrast : ColorsConstants.main,
+                  fontWeight: FontWeight.w600),
             ),
           ),
           TextField(
+            onSubmitted: (_) => onSubmitted != null ? onSubmitted() : null,
             style: const TextStyle(
                 color: ColorsConstants.main, fontWeight: FontWeight.w600),
             controller: controller,
             obscureText: isPassword,
             cursorColor: ColorsConstants.main,
             decoration: InputDecoration(
+                filled: filled,
+                fillColor: ColorsConstants.contrast,
                 border: OutlineInputBorder(
                     borderSide: const BorderSide(color: ColorsConstants.main),
                     borderRadius: BorderRadius.circular(8))),

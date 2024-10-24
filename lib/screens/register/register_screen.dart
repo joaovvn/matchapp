@@ -79,7 +79,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           }, controller.foodType)
                         : Container(),
                     WidgetConstants.textField(controller.titleController,
-                        AppLocalizations.of(context)!.title, context, 0.8),
+                        AppLocalizations.of(context)!.title, context),
                     WidgetConstants.imagePicker(controller.image, () async {
                       await controller.pickImage();
                       setState(() {});

@@ -18,6 +18,10 @@ class LoginController extends GetxController {
   Rx<LoadingState> loadingState = LoadingState.idle.obs;
 
   login() async {
+    if (emailController.text.isEmpty || passwordController.text.isEmpty) {
+      showWarning(AppLocalizations.of(context)!.fillFields);
+      return;
+    }
     try {
       loadingState.value = LoadingState.loading;
       await _auth

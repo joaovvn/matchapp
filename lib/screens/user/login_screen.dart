@@ -6,6 +6,7 @@ import 'package:match_app/constants/image_constants.dart';
 import 'package:match_app/constants/widget_constants.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:match_app/screens/user/controller/login_controller.dart';
+import 'package:match_app/screens/user/user_register_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -26,6 +27,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -101,11 +103,12 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     const Gap(5),
                     WidgetConstants.textField(controller.emailController,
-                        AppLocalizations.of(context)!.email, context, 0.8),
+                        AppLocalizations.of(context)!.email, context),
                     const Gap(5),
                     WidgetConstants.textField(controller.passwordController,
-                        AppLocalizations.of(context)!.password, context, 0.8,
-                        isPassword: true),
+                        AppLocalizations.of(context)!.password, context,
+                        isPassword: true,
+                        onSubmitted: () => controller.login()),
                     const Gap(5),
                     WidgetConstants.button(ColorsConstants.mainAccent, 0.8, () {
                       controller.login();
@@ -126,8 +129,9 @@ class _LoginScreenState extends State<LoginScreen> {
                               color: ColorsConstants.grey,
                               fontWeight: FontWeight.w600),
                         ),
-                        WidgetConstants.textButton(
-                            () {},
+                        WidgetConstants.textButton(() {
+                          Get.to(const UserRegisterScreen());
+                        },
                             Text(
                               AppLocalizations.of(context)!.register,
                               style: const TextStyle(

@@ -30,22 +30,25 @@ class FoodMatch extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GetMaterialApp(
-      debugShowCheckedModeBanner: false,
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
-      supportedLocales: AppLocalizations.supportedLocales,
-      theme: ThemeData(
-          pageTransitionsTheme: const PageTransitionsTheme(builders: {
-            TargetPlatform.android: CupertinoPageTransitionsBuilder(),
-            TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
-          }),
-          textTheme: Theme.of(context).textTheme.apply(
-              bodyColor: ColorsConstants.contrast,
-              displayColor: ColorsConstants.contrast,
-              fontFamily: 'Kodchasan')),
-      home: FirebaseAuth.instance.currentUser == null
-          ? const LoginScreen()
-          : const HomeScreen(),
+    return GestureDetector(
+      onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+      child: GetMaterialApp(
+        debugShowCheckedModeBanner: false,
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        theme: ThemeData(
+            pageTransitionsTheme: const PageTransitionsTheme(builders: {
+              TargetPlatform.android: CupertinoPageTransitionsBuilder(),
+              TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
+            }),
+            textTheme: Theme.of(context).textTheme.apply(
+                bodyColor: ColorsConstants.contrast,
+                displayColor: ColorsConstants.contrast,
+                fontFamily: 'Kodchasan')),
+        home: FirebaseAuth.instance.currentUser == null
+            ? const LoginScreen()
+            : const HomeScreen(),
+      ),
     );
   }
 }

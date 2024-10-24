@@ -41,6 +41,7 @@
     "login": "Entrar",
     "signinWithGoogle": "Entrar com Google",
     "or": "ou",
+    "name": "Nome",
     "email": "Email",
     "noAccount": "Não possui uma conta?",
     "invalidEmail": "O endereço de e-mail não é válido.",

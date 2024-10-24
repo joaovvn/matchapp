@@ -41,6 +41,7 @@
     "login": "Login",
     "signinWithGoogle": "Sign in with Google",
     "or": "or",
+    "name": "Name",
     "email": "Email",
     "noAccount": "Don't have an account?",
     "invalidEmail": "The email address is not valid.",
