@@ -33,7 +33,7 @@ class _LoginScreenState extends State<LoginScreen> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Expanded(
-            flex: 4,
+            flex: 2,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
@@ -44,7 +44,7 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
           ),
           Expanded(
-            flex: 5,
+            flex: 3,
             child: Obx(() {
               return WidgetConstants.loadingStateWidget(
                 controller.loadingState.value,
@@ -145,16 +145,10 @@ class _LoginScreenState extends State<LoginScreen> {
             }),
           ),
           Expanded(
-            flex: 3,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Obx(() {
-                  return WidgetConstants.languageSwitch(controller.isEnglish);
-                }),
-              ],
-            ),
-          )
+            child: Obx(() {
+              return WidgetConstants.languageSwitch(controller.isEnglish);
+            }),
+          ),
         ],
       ),
     );

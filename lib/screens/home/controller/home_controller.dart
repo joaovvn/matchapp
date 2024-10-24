@@ -70,7 +70,9 @@ class HomeController extends GetxController {
 
   logOut() async {
     try {
-      await _googleSignIn.disconnect();
+      if (await _googleSignIn.isSignedIn()) {
+        await _googleSignIn.disconnect();
+      }
 
       await _auth.signOut();
 
