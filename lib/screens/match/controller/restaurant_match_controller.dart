@@ -20,6 +20,8 @@ class RestaurantMatchController extends GetxController {
   GetStorage storage = GetStorage();
   bool match = false;
   Rx<List<Restaurant>?> restaurantList = Rx<List<Restaurant>?>(null);
+  RxBool finished = false.obs;
+  AppinioSwiperController swiperController = AppinioSwiperController();
 
   Future<void> getList() async {
     await getUser();
@@ -36,6 +38,11 @@ class RestaurantMatchController extends GetxController {
         .map((child) => Restaurant.fromJson(
             Map<String, dynamic>.from(child.value as Map), child.key!))
         .toList();
+  }
+
+  bool checkList() {
+    return restaurantList.value != null &&
+        (restaurantList.value ?? []).isNotEmpty;
   }
 
   Future<bool> hasMenu(String restaurantName) async {

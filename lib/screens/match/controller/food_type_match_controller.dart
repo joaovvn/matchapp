@@ -17,8 +17,10 @@ class FoodTypeMatchController extends GetxController {
   bool match = false;
   GetStorage storage = GetStorage();
   Rx<List<FoodType>?> foodTypeList = Rx<List<FoodType>?>(null);
+  AppinioSwiperController swiperController = AppinioSwiperController();
+  RxBool finished = false.obs;
 
-  void getList() async {
+  void init() async {
     await getUser();
     if (groupId == "") {
       return;
@@ -39,6 +41,10 @@ class FoodTypeMatchController extends GetxController {
     if ((foodTypeList.value ?? []).isNotEmpty) {
       verifyMatches();
     }
+  }
+
+  bool checkList() {
+    return foodTypeList.value != null && (foodTypeList.value ?? []).isNotEmpty;
   }
 
   getUser() async {
@@ -71,11 +77,10 @@ class FoodTypeMatchController extends GetxController {
         FirebaseDatabase.instance.ref(ValueConstants.votes);
     for (FoodType foodType in foodTypeList.value!) {
       reference
-          .orderByChild(ValueConstants.restaurantId)
+          .orderByChild(ValueConstants.foodTypeId)
           .equalTo(foodType.id)
           .onValue
           .listen((DatabaseEvent event) {
-        debugPrint(event.snapshot.children.toString());
         if (event.snapshot.children
                 .where((child) =>
                     FoodVote.fromJson(

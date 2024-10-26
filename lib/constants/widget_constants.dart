@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
+import 'package:appinio_swiper/appinio_swiper.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
@@ -444,9 +445,9 @@ class WidgetConstants {
   }
 
   static Widget dropdown(List<DropdownMenuItem> items, String title,
-      Function(dynamic)? onChanged, dynamic value) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 30.0),
+      Function(dynamic)? onChanged, dynamic value, BuildContext context) {
+    return SizedBox(
+      width: MediaQuery.of(context).size.width * 0.8,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -474,10 +475,10 @@ class WidgetConstants {
   }
 
   static Widget imagePicker(
-      Uint8List? image, Function() onTap, BuildContext context) {
+      Uint8List image, Function() onTap, BuildContext context) {
     return Expanded(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 30.0),
+      child: SizedBox(
+        width: MediaQuery.of(context).size.width * 0.8,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
@@ -495,12 +496,12 @@ class WidgetConstants {
                   child: Container(
                     decoration: BoxDecoration(
                         border: Border.all(
-                          color: image == null
+                          color: image.isEmpty
                               ? Colors.grey
                               : ColorsConstants.main,
                         ),
                         borderRadius: BorderRadius.circular(8)),
-                    child: image == null
+                    child: image.isEmpty
                         ? const Icon(
                             Icons.image_search,
                             color: Colors.grey,
@@ -560,35 +561,37 @@ class WidgetConstants {
 
   static languageSwitch(RxBool isEnglish) {
     GetStorage storage = GetStorage();
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Image.asset(
-          isEnglish.value
-              ? ImageConstants.brFlagOutlined
-              : ImageConstants.brFlag,
-        ),
-        Switch(
-          value: isEnglish.value,
-          onChanged: (_) async {
-            isEnglish.value = !isEnglish.value;
-            Locale locale =
-                isEnglish.value ? const Locale("en") : const Locale("pt");
-            await Get.updateLocale(locale);
-            storage.write("locale", locale.languageCode);
-          },
-          inactiveTrackColor: ColorsConstants.brGreen,
-          inactiveThumbColor: ColorsConstants.brYellow,
-          activeColor: ColorsConstants.usBlue,
-          activeTrackColor: ColorsConstants.usRed,
-        ),
-        Image.asset(
-          isEnglish.value
-              ? ImageConstants.usFlag
-              : ImageConstants.usFlagOutlined,
-        ),
-      ],
-    );
+    return Obx(() {
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Image.asset(
+            isEnglish.value
+                ? ImageConstants.brFlagOutlined
+                : ImageConstants.brFlag,
+          ),
+          Switch(
+            value: isEnglish.value,
+            onChanged: (_) async {
+              isEnglish.value = !isEnglish.value;
+              Locale locale =
+                  isEnglish.value ? const Locale("en") : const Locale("pt");
+              await Get.updateLocale(locale);
+              storage.write("locale", locale.languageCode);
+            },
+            inactiveTrackColor: ColorsConstants.brGreen,
+            inactiveThumbColor: ColorsConstants.brYellow,
+            activeColor: ColorsConstants.usBlue,
+            activeTrackColor: ColorsConstants.usRed,
+          ),
+          Image.asset(
+            isEnglish.value
+                ? ImageConstants.usFlag
+                : ImageConstants.usFlagOutlined,
+          ),
+        ],
+      );
+    });
   }
 
   static addedGroup(BuildContext context) {
@@ -718,6 +721,60 @@ class WidgetConstants {
     return AnimatedSwitcher(
       duration: Durations.medium2,
       child: widget,
+    );
+  }
+
+  static warning(String warning) {
+    return Center(
+      child: FittedBox(
+        fit: BoxFit.fitWidth,
+        child: Text(
+          warning,
+          textAlign: TextAlign.center,
+          style: const TextStyle(
+              fontWeight: FontWeight.bold, color: ColorsConstants.main),
+        ),
+      ),
+    );
+  }
+
+  static waitingVotes(BuildContext context) {
+    return warning(AppLocalizations.of(context)!.waitingGroupVotes);
+  }
+
+  static voteButtons(AppinioSwiperController swiperController) {
+    return Expanded(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          IconButton(
+              iconSize: 50,
+              onPressed: () => swiperController.swipeLeft(),
+              style: const ButtonStyle(
+                  backgroundColor: WidgetStatePropertyAll(Colors.red)),
+              icon: const Icon(
+                Icons.close,
+                color: ColorsConstants.contrast,
+              )),
+          IconButton(
+              iconSize: 50,
+              onPressed: () => swiperController.swipeRight(),
+              style: const ButtonStyle(
+                  backgroundColor: WidgetStatePropertyAll(Colors.green)),
+              icon: const Icon(
+                Icons.check,
+                color: ColorsConstants.contrast,
+              ))
+        ],
+      ),
+    );
+  }
+
+  static loader() {
+    return const Center(
+      child: CircularProgressIndicator(
+        color: ColorsConstants.main,
+      ),
     );
   }
 }

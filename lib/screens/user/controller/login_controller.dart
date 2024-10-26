@@ -84,8 +84,8 @@ class LoginController extends GetxController {
 
   signInWithGoogle() async {
     try {
-      GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
       loadingState.value = LoadingState.loading;
+      GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
       if (googleUser == null) {
         loadingState.value = LoadingState.idle;
         return;

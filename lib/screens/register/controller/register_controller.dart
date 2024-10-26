@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:match_app/constants/colors_constants.dart';
@@ -16,15 +17,15 @@ class RegisterController {
   RegisterController({required this.context});
   BuildContext context;
   TextEditingController titleController = TextEditingController();
-  String option = ValueConstants.foodType;
+  RxString option = ValueConstants.foodType.obs;
   String? foodType;
-  Uint8List? image;
+  Rx<Uint8List> image = Uint8List(0).obs;
   String? groupId;
   GetStorage storage = GetStorage();
-  List<DropdownMenuItem> foodTypeItems =
-      List<DropdownMenuItem>.empty(growable: true);
+  RxList<DropdownMenuItem> foodTypeItems =
+      List<DropdownMenuItem>.empty(growable: true).obs;
 
-  Future<bool> getFoodTypes() async {
+  getFoodTypes() async {
     groupId = storage.read(ValueConstants.groupId);
     if (groupId == null) {
       openNoPartnerDialog();
@@ -56,7 +57,6 @@ class RegisterController {
         ));
       }
     }
-    return true;
   }
 
   openNoPartnerDialog() {
@@ -68,7 +68,7 @@ class RegisterController {
       ImagePicker picker = ImagePicker();
       XFile? xFile = await picker.pickImage(source: ImageSource.gallery);
       if (xFile != null) {
-        image = await xFile.readAsBytes();
+        image.value = await xFile.readAsBytes();
       }
     } on PlatformException catch (error) {
       debugPrint('Failed to pick image: $error');
@@ -76,7 +76,7 @@ class RegisterController {
   }
 
   register() async {
-    if (titleController.text.isEmpty || image == null) {
+    if (titleController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text(
           AppLocalizations.of(context)!.fillFields,
@@ -88,24 +88,27 @@ class RegisterController {
       ));
       return;
     }
-    DatabaseReference reference = FirebaseDatabase.instance.ref(option).push();
+    DatabaseReference reference =
+        FirebaseDatabase.instance.ref(option.value).push();
     await reference
-        .set(option == ValueConstants.foodType
+        .set(option.value == ValueConstants.foodType
             ? FoodType(
                     id: "",
                     title: titleController.text,
-                    image: image != null ? base64.encode(image!.toList()) : "",
+                    image: image.value.isEmpty
+                        ? base64.encode(image.value.toList())
+                        : "",
                     groupId: groupId!)
                 .toJson()
             : Restaurant(
                     id: "",
                     title: titleController.text,
-                    image: image != null ? base64.encode(image!.toList()) : "",
+                    image: image.value.isEmpty
+                        ? base64.encode(image.value.toList())
+                        : "",
                     foodTypeId: foodType!)
                 .toJson())
-        .catchError((e) {
-      debugPrint(e);
-    });
+        .catchError((e) {});
     showRegisterDialog();
   }
 
