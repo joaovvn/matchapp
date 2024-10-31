@@ -23,7 +23,7 @@ class HomeController extends GetxController {
   BuildContext context;
   final GetStorage _storage = GetStorage();
   RxString groupId = "".obs;
-  RxBool isEnglish = (Get.locale == const Locale("en")).obs;
+  RxBool isEnglish = (Get.locale == const Locale(ValueConstants.english)).obs;
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final GoogleSignIn _googleSignIn = GoogleSignIn();
   StreamSubscription<DatabaseEvent>? _groupRemovedListener;

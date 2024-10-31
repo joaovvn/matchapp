@@ -7,7 +7,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:match_app/constants/widget_constants.dart';
 import 'package:match_app/screens/match/controller/food_type_match_controller.dart';
 
-foodSwiper(FoodTypeMatchController controller) {
+Widget foodSwiper(FoodTypeMatchController controller) {
   return AppinioSwiper(
     backgroundCardCount: 2,
     swipeOptions: const SwipeOptions.symmetric(horizontal: true),
@@ -28,7 +28,7 @@ foodSwiper(FoodTypeMatchController controller) {
   );
 }
 
-foodTypeCard(FoodTypeMatchController controller, int index) {
+Widget foodTypeCard(FoodTypeMatchController controller, int index) {
   return Container(
     decoration: BoxDecoration(
       borderRadius: BorderRadius.circular(30),
@@ -69,7 +69,7 @@ foodTypeCard(FoodTypeMatchController controller, int index) {
   );
 }
 
-noRegisteredFoods(BuildContext context) {
+Widget noRegisteredFoods(BuildContext context) {
   return WidgetConstants.warning(
       AppLocalizations.of(context)!.noRegisteredFoods);
 }

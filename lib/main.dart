@@ -5,6 +5,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:match_app/constants/colors_constants.dart';
+import 'package:match_app/constants/value_constants.dart';
 import 'package:match_app/screens/home/home_screen.dart';
 import 'package:match_app/screens/user/login_screen.dart';
 import 'firebase_options.dart';
@@ -16,10 +17,10 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   GetStorage storage = GetStorage();
-  String? language = storage.read('locale');
+  String? language = storage.read(ValueConstants.locale);
   if (language == null) {
-    storage.write('locale', 'en');
-    language = 'en';
+    storage.write(ValueConstants.locale, ValueConstants.english);
+    language = ValueConstants.english;
   }
   await Get.updateLocale(Locale(language));
   runApp(const FoodMatch());
@@ -44,7 +45,7 @@ class FoodMatch extends StatelessWidget {
             textTheme: Theme.of(context).textTheme.apply(
                 bodyColor: ColorsConstants.contrast,
                 displayColor: ColorsConstants.contrast,
-                fontFamily: 'Kodchasan')),
+                fontFamily: ValueConstants.fontFamily)),
         home: FirebaseAuth.instance.currentUser == null
             ? const LoginScreen()
             : const HomeScreen(),

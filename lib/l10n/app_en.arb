@@ -38,6 +38,7 @@
     "errorConnectingGroup": "Error while connecting group! Try again later.",
     "user": "User",
     "password": "Password",
+    "confirmPassword": "Confirm Password",
     "login": "Login",
     "signinWithGoogle": "Sign in with Google",
     "or": "or",
@@ -55,5 +56,9 @@
     "operationNotAllowed": "Email/password login is not enabled.",
     "errorLogout": "Error logging out. Try again!",
     "unexpectedError": "Unexpected error. Please try again.",
-    "unknownError": "Unknown error: "
+    "unknownError": "Unknown error: ",
+    "weakPassword": "The provided password is too weak. Please choose a stronger password.",
+    "emailAlreadyInUse": "This email is already in use. Try another address.",
+    "userRegistrationSuccess": "User registered succesfully! Check your email to complete registration.",
+    "passwordsNotMatching": "The passwords do not match. Please check and try again."
 }

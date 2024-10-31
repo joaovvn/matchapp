@@ -7,13 +7,13 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:match_app/constants/widget_constants.dart';
 import 'package:match_app/screens/match/controller/restaurant_match_controller.dart';
 
-noRegisteredRestaurants(BuildContext context) {
+Widget noRegisteredRestaurants(BuildContext context) {
   return WidgetConstants.warning(
       AppLocalizations.of(context)!.noRegisteredRestaurants);
 }
 
-restaurantSwiper(RestaurantMatchController controller) {
-  AppinioSwiper(
+Widget restaurantSwiper(RestaurantMatchController controller) {
+  return AppinioSwiper(
     backgroundCardCount: 2,
     swipeOptions: const SwipeOptions.symmetric(horizontal: true),
     allowUnSwipe: false,
@@ -33,7 +33,7 @@ restaurantSwiper(RestaurantMatchController controller) {
   );
 }
 
-restaurantCard(RestaurantMatchController controller, int index) {
+Widget restaurantCard(RestaurantMatchController controller, int index) {
   return Container(
     decoration: BoxDecoration(
       borderRadius: BorderRadius.circular(30),

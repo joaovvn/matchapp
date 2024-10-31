@@ -8,7 +8,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:match_app/screens/match/food_type_match_screen.dart';
 import 'package:match_app/screens/register/register_screen.dart';
 
-groupButton(HomeController controller, BuildContext context) {
+Widget groupButton(HomeController controller, BuildContext context) {
   return TextButton(
     onPressed: () async {
       controller.groupId.value.isEmpty
@@ -36,7 +36,7 @@ groupButton(HomeController controller, BuildContext context) {
   );
 }
 
-registerButton(BuildContext context) {
+Widget registerButton(BuildContext context) {
   return WidgetConstants.button(
       ColorsConstants.contrast,
       0.5,
@@ -49,7 +49,7 @@ registerButton(BuildContext context) {
       context);
 }
 
-startButton(BuildContext context) {
+Widget startButton(BuildContext context) {
   return WidgetConstants.button(ColorsConstants.main, 0.5, () {
     FunctionConstants.resetVotes();
     Get.to(() => const FoodTypeMatchScreen());

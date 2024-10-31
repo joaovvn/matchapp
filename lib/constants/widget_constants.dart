@@ -11,6 +11,7 @@ import 'package:match_app/constants/colors_constants.dart';
 import 'package:match_app/constants/function_constants.dart';
 import 'package:match_app/constants/image_constants.dart';
 import 'package:match_app/constants/loading_state.dart';
+import 'package:match_app/constants/value_constants.dart';
 import 'package:match_app/models/food_type.dart';
 import 'package:match_app/models/restaurant.dart';
 import 'package:match_app/screens/match/restaurant_match_screen.dart';
@@ -75,7 +76,7 @@ class WidgetConstants {
   static showWarning(BuildContext context, String text) {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       backgroundColor: ColorsConstants.main,
-      duration: const Duration(seconds: 1, milliseconds: 500),
+      duration: Durations.extralong1,
       content: Text(
         text,
         textAlign: TextAlign.center,
@@ -523,7 +524,9 @@ class WidgetConstants {
       {bool isPassword = false,
       bool filled = false,
       double width = 0.8,
-      Function? onSubmitted}) {
+      Function? onSubmitted,
+      Function? onChanged,
+      Icon? suffixIcon}) {
     Size screenSize = MediaQuery.of(context).size;
     return SizedBox(
       width: screenSize.width * width,
@@ -542,12 +545,14 @@ class WidgetConstants {
           ),
           TextField(
             onSubmitted: (_) => onSubmitted != null ? onSubmitted() : null,
+            onChanged: (_) => onChanged != null ? onChanged() : null,
             style: const TextStyle(
                 color: ColorsConstants.main, fontWeight: FontWeight.w600),
             controller: controller,
             obscureText: isPassword,
             cursorColor: ColorsConstants.main,
             decoration: InputDecoration(
+                suffixIcon: suffixIcon,
                 filled: filled,
                 fillColor: ColorsConstants.contrast,
                 border: OutlineInputBorder(
@@ -574,10 +579,11 @@ class WidgetConstants {
             value: isEnglish.value,
             onChanged: (_) async {
               isEnglish.value = !isEnglish.value;
-              Locale locale =
-                  isEnglish.value ? const Locale("en") : const Locale("pt");
+              Locale locale = isEnglish.value
+                  ? const Locale(ValueConstants.english)
+                  : const Locale(ValueConstants.portuguese);
               await Get.updateLocale(locale);
-              storage.write("locale", locale.languageCode);
+              storage.write(ValueConstants.locale, locale.languageCode);
             },
             inactiveTrackColor: ColorsConstants.brGreen,
             inactiveThumbColor: ColorsConstants.brYellow,
@@ -696,25 +702,30 @@ class WidgetConstants {
             )));
   }
 
-  static Widget loadingStateWidget(
-      LoadingState loadingState, Widget idleWidget) {
+  static Widget loadingStateWidget(LoadingState loadingState, Widget idleWidget,
+      {bool contrast = false}) {
     Widget widget;
     switch (loadingState) {
       case LoadingState.idle:
         widget = idleWidget;
         break;
       case LoadingState.loading:
-        widget = const CircularProgressIndicator(
-          color: ColorsConstants.mainAccent,
+        widget = CircularProgressIndicator(
+          color:
+              contrast ? ColorsConstants.contrast : ColorsConstants.mainAccent,
         );
         break;
       case LoadingState.success:
         widget = const Icon(Icons.check,
-            color: Colors.green, size: 50, key: ValueKey(LoadingState.success));
+            color: ColorsConstants.green,
+            size: 50,
+            key: ValueKey(LoadingState.success));
         break;
       case LoadingState.error:
-        widget = const Icon(Icons.close,
-            color: Colors.red, size: 50, key: ValueKey(LoadingState.error));
+        widget = Icon(Icons.close,
+            color: contrast ? ColorsConstants.contrast : ColorsConstants.red,
+            size: 50,
+            key: const ValueKey(LoadingState.error));
         break;
     }
 

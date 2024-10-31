@@ -38,6 +38,7 @@
     "errorConnectingGroup": "Erro ao conectar ao grupo! Tente novamente mais tarde.",
     "user": "Usuário",
     "password": "Senha",
+    "confirmPassword": "Confirme a Senha",
     "login": "Entrar",
     "signinWithGoogle": "Entrar com Google",
     "or": "ou",
@@ -55,5 +56,9 @@
     "operationNotAllowed": "O login com e-mail/senha não está habilitado.",
     "errorLogout": "Erro ao fazer Logout. Tente novamente!",
     "unexpectedError": "Erro inesperado. Tente novamente.",
-    "unknownError": "Erro desconhecido: "
+    "unknownError": "Erro desconhecido: ",
+    "weakPassword": "A senha fornecida é muito fraca. Escolha uma senha mais forte.",
+    "emailAlreadyInUse": "Este email já está em uso. Tente outro endereço.",
+    "userRegistrationSuccess": "Usuário cadastrado com sucesso! Verifique seu email para concluir o cadastro.",
+    "passwordsNotMatching": "As senhas inseridas não coincidem. Por favor, verifique e tente novamente."
 }

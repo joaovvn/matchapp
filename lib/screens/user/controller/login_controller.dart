@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:match_app/constants/loading_state.dart';
+import 'package:match_app/constants/value_constants.dart';
 import 'package:match_app/constants/widget_constants.dart';
 import 'package:match_app/screens/home/home_screen.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -10,7 +11,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 class LoginController extends GetxController {
   LoginController({required this.context});
   BuildContext context;
-  RxBool isEnglish = (Get.locale == const Locale("en")).obs;
+  RxBool isEnglish = (Get.locale == const Locale(ValueConstants.english)).obs;
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   final FirebaseAuth _auth = FirebaseAuth.instance;

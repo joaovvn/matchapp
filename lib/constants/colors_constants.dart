@@ -9,4 +9,6 @@ class ColorsConstants {
   static const Color mainAccent = Color.fromRGBO(211, 45, 62, 1);
   static const Color contrast = Color.fromRGBO(255, 255, 255, 1);
   static const Color grey = Color.fromRGBO(71, 71, 71, 1);
+  static const Color green = Color.fromRGBO(0, 155, 0, 1);
+  static const Color red = Color.fromRGBO(155, 0, 0, 1);
 }
