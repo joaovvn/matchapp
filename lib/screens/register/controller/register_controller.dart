@@ -25,41 +25,46 @@ class RegisterController {
   RxList<DropdownMenuItem> foodTypeItems =
       List<DropdownMenuItem>.empty(growable: true).obs;
 
-  getFoodTypes() async {
+  init() async {
     groupId = storage.read(ValueConstants.groupId);
     if (groupId == null) {
-      openNoPartnerDialog();
-    } else {
-      DatabaseEvent foodEvent = await FirebaseDatabase.instance
-          .ref(ValueConstants.foodType)
-          .orderByChild(ValueConstants.groupId)
-          .equalTo(groupId)
-          .once();
+      openNoGroupDialog();
+      return;
+    }
+    await getFoodTypes();
+    showRegisterDialog();
+  }
 
-      List<FoodType> foodTypes = foodEvent.snapshot.children
-          .map((child) => FoodType.fromJson(
-              Map<String, dynamic>.from(child.value as Map), child.key!))
-          .toList();
+  getFoodTypes() async {
+    DatabaseEvent foodEvent = await FirebaseDatabase.instance
+        .ref(ValueConstants.foodType)
+        .orderByChild(ValueConstants.groupId)
+        .equalTo(groupId)
+        .once();
 
-      if (foodTypes.isNotEmpty && foodType == null) {
-        foodType = foodTypes[0].id;
-      }
+    List<FoodType> foodTypes = foodEvent.snapshot.children
+        .map((child) => FoodType.fromJson(
+            Map<String, dynamic>.from(child.value as Map), child.key!))
+        .toList();
 
-      foodTypeItems.clear();
+    if (foodTypes.isNotEmpty && foodType == null) {
+      foodType = foodTypes[0].id;
+    }
 
-      for (FoodType foodType in foodTypes) {
-        foodTypeItems.add(DropdownMenuItem(
-          value: foodType.id,
-          child: Text(
-            foodType.title,
-            style: const TextStyle(color: ColorsConstants.main),
-          ),
-        ));
-      }
+    foodTypeItems.clear();
+
+    for (FoodType foodType in foodTypes) {
+      foodTypeItems.add(DropdownMenuItem(
+        value: foodType.id,
+        child: Text(
+          foodType.title,
+          style: const TextStyle(color: ColorsConstants.main),
+        ),
+      ));
     }
   }
 
-  openNoPartnerDialog() {
+  openNoGroupDialog() {
     WidgetConstants.noGroupDialog(context);
   }
 
@@ -95,7 +100,7 @@ class RegisterController {
             ? FoodType(
                     id: "",
                     title: titleController.text,
-                    image: image.value.isEmpty
+                    image: image.value.isNotEmpty
                         ? base64.encode(image.value.toList())
                         : "",
                     groupId: groupId!)
@@ -103,7 +108,7 @@ class RegisterController {
             : Restaurant(
                     id: "",
                     title: titleController.text,
-                    image: image.value.isEmpty
+                    image: image.value.isNotEmpty
                         ? base64.encode(image.value.toList())
                         : "",
                     foodTypeId: foodType!)

@@ -94,47 +94,50 @@ class WidgetConstants {
       context: context,
       barrierDismissible: false,
       builder: (context) => Dialog(
-        child: Container(
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(8),
-              color: const Color.fromRGBO(255, 255, 255, 1)),
-          child: Column(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                Padding(
-                  padding:
-                      EdgeInsets.symmetric(horizontal: screenSize.width * 0.05),
-                  child: Column(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text(
-                          AppLocalizations.of(context)!.registeredSuccesfully,
-                          textAlign: TextAlign.center,
-                          style: const TextStyle(
-                              color: ColorsConstants.main,
-                              fontSize: 30,
-                              fontWeight: FontWeight.bold),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Container(
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(8),
+                color: const Color.fromRGBO(255, 255, 255, 1)),
+            child: Column(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  Padding(
+                    padding: EdgeInsets.symmetric(
+                        horizontal: screenSize.width * 0.05),
+                    child: Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(
+                            AppLocalizations.of(context)!.registeredSuccesfully,
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(
+                                color: ColorsConstants.main,
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold),
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
-                Padding(
-                  padding: EdgeInsets.symmetric(
-                      horizontal: screenSize.width * 0.05, vertical: 20.0),
-                  child: button(ColorsConstants.main, 0.9, () {
-                    Get.until((route) => route.isFirst);
-                  },
-                      Text(AppLocalizations.of(context)!.ok,
-                          style: const TextStyle(
-                              fontSize: 10,
-                              color: ColorsConstants.contrast,
-                              fontWeight: FontWeight.bold)),
-                      context),
-                )
-              ]),
+                  Padding(
+                    padding: EdgeInsets.symmetric(
+                        horizontal: screenSize.width * 0.05),
+                    child: button(ColorsConstants.main, 0.9, () {
+                      Get.until((route) => route.isFirst);
+                    },
+                        Text(AppLocalizations.of(context)!.ok,
+                            style: const TextStyle(
+                                fontSize: 10,
+                                color: ColorsConstants.contrast,
+                                fontWeight: FontWeight.bold)),
+                        context),
+                  )
+                ]),
+          ),
         ),
       ),
     );

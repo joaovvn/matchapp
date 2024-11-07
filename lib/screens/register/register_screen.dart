@@ -18,7 +18,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   @override
   void initState() {
-    controller = RegisterController(context: context);
+    controller = Get.put(RegisterController(context: context));
+    controller.init();
     super.initState();
   }
 

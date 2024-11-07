@@ -4,6 +4,7 @@ import 'package:appinio_swiper/appinio_swiper.dart';
 import 'package:flutter/material.dart';
 import 'package:match_app/constants/colors_constants.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:match_app/constants/image_constants.dart';
 import 'package:match_app/constants/widget_constants.dart';
 import 'package:match_app/screens/match/controller/food_type_match_controller.dart';
 
@@ -45,11 +46,16 @@ Widget foodTypeCard(FoodTypeMatchController controller, int index) {
             child: ClipRRect(
               borderRadius:
                   const BorderRadius.vertical(top: Radius.circular(20)),
-              child: Image.memory(
-                base64Decode(controller.foodTypeList.value![index].image),
-                gaplessPlayback: true,
-                fit: BoxFit.fill,
-              ),
+              child: controller.foodTypeList.value![index].image.isNotEmpty
+                  ? Image.memory(
+                      base64Decode(controller.foodTypeList.value![index].image),
+                      gaplessPlayback: true,
+                      fit: BoxFit.fill,
+                    )
+                  : FittedBox(
+                      fit: BoxFit.fitHeight,
+                      child: Image.asset(ImageConstants.logo),
+                    ),
             ),
           ),
           Expanded(
